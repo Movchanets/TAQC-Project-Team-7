@@ -1,0 +1,21 @@
+{
+  "name": "taqc-repo-here",
+  "version": "1.0.0",
+  "description": "A clean, scalable end-to-end testing framework built with **Playwright** and **TypeScript**, following the Page Object Model (POM) design pattern.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^25.6.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2"
+  }
+}
