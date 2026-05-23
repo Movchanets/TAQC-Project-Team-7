@@ -12,10 +12,19 @@
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
-    "@playwright/test": "^1.59.1",
-    "@types/node": "^25.6.0"
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.6.0",
+    "allure-playwright": "^3.9.0"
   },
   "dependencies": {
     "dotenv": "^17.4.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Movchanets/TAQC-Project-Team-7.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Movchanets/TAQC-Project-Team-7/issues"
+  },
+  "homepage": "https://github.com/Movchanets/TAQC-Project-Team-7#readme"
 }

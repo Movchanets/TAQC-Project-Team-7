@@ -1,17 +1,25 @@
-import { Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 
-/**
- * BasePage
- *
- * Abstract foundation for all Page Object classes.
- * All concrete page objects must extend this class.
- *
- * @stub — No page-specific selectors or actions are implemented here.
- */
-export abstract class BasePage {
+export class BasePage {
   protected readonly page: Page;
 
   constructor(page: Page) {
     this.page = page;
+  }
+
+  async open(path: string = ''): Promise<void> {
+    await this.page.goto(path);
+  }
+
+  async click(locator: Locator): Promise<void> {
+    await locator.click();
+  }
+
+  async fill(locator: Locator, text: string): Promise<void> {
+    await locator.fill(text);
+  }
+
+  async shouldBeVisible(locator: Locator): Promise<void> {
+    await expect(locator).toBeVisible();
   }
 }

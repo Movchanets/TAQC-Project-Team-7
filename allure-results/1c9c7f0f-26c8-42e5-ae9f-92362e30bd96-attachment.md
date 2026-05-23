@@ -1,0 +1,275 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: login.spec.ts >> User cannot login with invalid credentials
+- Location: tests\login.spec.ts:6:5
+
+# Error details
+
+```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for locator('a, button').filter({ hasText: 'Sign in' })
+    - locator resolved to <a role="link" tabindex="0" _ngcontent-ng-c3629200733="" class="ubs-header-sign-in ng-star-inserted"> Sign in </a>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+      - waiting 100ms
+    46 × waiting for element to be visible, enabled and stable
+       - element is not visible
+     - retrying click action
+       - waiting 500ms
+    - waiting for element to be visible, enabled and stable
+
+```
+
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - link "skip to the main content" [ref=e6] [cursor=pointer]:
+      - /url: .main-content
+    - generic [ref=e7]:
+      - generic "Tab To Main"
+      - generic [ref=e8]:
+        - banner "Welcome to header" [ref=e9]:
+          - generic [ref=e11]:
+            - link "Image ubs logo" [ref=e12] [cursor=pointer]:
+              - /url: "#/ubs"
+              - link "Image ubs logo" [ref=e13]
+            - generic [ref=e14]:
+              - navigation [ref=e15]:
+                - tablist [ref=e16]:
+                  - link "About service" [ref=e17] [cursor=pointer]:
+                    - /url: ""
+                  - listitem [ref=e18]:
+                    - link "Sorting rules" [ref=e19] [cursor=pointer]:
+                      - /url: https://nowaste.com.ua/sort-station/
+                  - listitem [ref=e20]:
+                    - link "Eco-Shop" [ref=e21] [cursor=pointer]:
+                      - /url: https://shop.nowaste.com.ua/
+                  - listitem [ref=e22]:
+                    - link "Green City" [ref=e23] [cursor=pointer]:
+                      - /url: "#/greenCity"
+              - menu [ref=e25]:
+                - menu "language switcher" [ref=e26] [cursor=pointer]:
+                  - option "english" [ref=e27]:
+                    - generic [ref=e28]: EN
+                    - img [ref=e29]
+                - img "sing in button" [ref=e30]
+                - link "Sign up" [ref=e31] [cursor=pointer]:
+                  - generic [ref=e33]: Sign up
+        - generic [ref=e35]:
+          - banner [ref=e36]:
+            - img [ref=e38]
+            - img [ref=e41]
+            - generic [ref=e59]:
+              - button "Order" [ref=e60] [cursor=pointer]
+              - generic [ref=e61]:
+                - paragraph [ref=e62]: NO WASTE — NO STRESS!
+                - paragraph [ref=e63]: You sort - we recycle!
+          - generic [ref=e64]:
+            - heading "Our partners" [level=2] [ref=e65]
+            - generic [ref=e66]:
+              - link "no-waste logo" [ref=e67] [cursor=pointer]:
+                - /url: https://shop.nowaste.com.ua/?fbclid=PAZXh0bgNhZW0CMTEAAaYIAGXhfBRGycQ5C6VAB5c4dRvJHgy_KaLdN_FiWrR-ukCCx27KQTFfgHA_aem_mRGfDTwfqAP7Ua_eSTk1xQ
+                - img "no-waste logo" [ref=e68]
+              - link "ubs logo" [ref=e69] [cursor=pointer]:
+                - /url: https://nowaste.com.ua/
+                - img "ubs logo" [ref=e70]
+              - link "GoToRe logo" [ref=e71] [cursor=pointer]:
+                - /url: https://www.instagram.com/goto.recycling
+                - img "GoToRe logo" [ref=e72]
+          - generic [ref=e73]:
+            - heading "How to prepare?" [level=2] [ref=e74]
+            - generic [ref=e75]:
+              - generic [ref=e76]:
+                - generic [ref=e77]:
+                  - generic [ref=e78]: "01"
+                  - paragraph [ref=e80]:
+                    - text: Check out the
+                    - link "list" [ref=e81] [cursor=pointer]:
+                      - /url: https://nowaste.com.ua/sort-station/
+                    - text: of what we accept
+                - generic [ref=e82]:
+                  - generic [ref=e83]: "02"
+                  - generic [ref=e84]: Collect a mix of clean and dry waste in bags
+                - generic [ref=e85]:
+                  - generic [ref=e86]: "03"
+                  - generic [ref=e87]: Collect textile waste in a separate bag
+                - generic [ref=e88]:
+                  - generic [ref=e89]: "04"
+                  - generic [ref=e90]: Order and pay for the service
+                - generic [ref=e91]:
+                  - generic [ref=e92]: "05"
+                  - generic [ref=e93]: Wait for feedback and a meeting with the courier
+              - generic [ref=e94]:
+                - generic [ref=e95]:
+                  - heading "Rules" [level=2] [ref=e98]
+                  - generic [ref=e100]:
+                    - paragraph [ref=e101]: Minimum order within Kyiv - 240 l
+                    - paragraph [ref=e102]: Minimum order within a radius of 20 km from Kyiv (2400 l)
+                    - blockquote [ref=e103]: "Lifehack: team up with your neighbors☝️"
+                    - paragraph [ref=e104]: One package should not weigh more than 5 kg
+                - generic [ref=e105]:
+                  - heading "Bonus" [level=2] [ref=e107]
+                  - generic [ref=e109]:
+                    - paragraph [ref=e110]: Along with paid packages, the courier can pick up some extra items of raw materials for processing for free
+                    - paragraph [ref=e111]: "Mandatory condition: they must be clean, dry and packed in a frame bag"
+                    - paragraph [ref=e112]:
+                      - text: See the list
+                      - link "here" [ref=e113] [cursor=pointer]:
+                        - /url: https://nowaste.com.ua/extra_poziciy_curyer/
+          - generic [ref=e116]:
+            - heading "The cost of PICK UP service for tariff Kyiv arrowDown" [level=2] [ref=e117]:
+              - text: The cost of PICK UP service for tariff
+              - generic [ref=e122]:
+                - combobox "Choose the tariff" [ref=e123]: Kyiv
+                - img "arrowDown" [ref=e124] [cursor=pointer]
+            - generic [ref=e125]:
+              - generic [ref=e126]:
+                - generic [ref=e128]: Mix waste with a volume of 120 l
+                - generic [ref=e129]:
+                  - generic [ref=e130]: 280 UAH
+                  - generic [ref=e131]: per 1 package
+              - generic [ref=e132]:
+                - generic [ref=e134]: Textile waste with a volume of 60 l
+                - generic [ref=e135]:
+                  - generic [ref=e136]: 220 UAH
+                  - generic [ref=e137]: per 1 package
+              - generic [ref=e138]:
+                - generic [ref=e140]: Textile waste with a volume of 20 l
+                - generic [ref=e141]:
+                  - generic [ref=e142]: 110 UAH
+                  - generic [ref=e143]: per 1 package
+          - generic [ref=e145]:
+            - heading "To order PICK UP service:" [level=2] [ref=e146]
+            - generic [ref=e147]:
+              - generic [ref=e149]:
+                - separator [ref=e150]
+                - generic [ref=e151]:
+                  - paragraph [ref=e152]: "1"
+                  - generic [ref=e153]:
+                    - heading "Register" [level=1] [ref=e154]
+                    - paragraph [ref=e155]: Create your personal account, where the history of your orders will be stored
+                - separator [ref=e156]
+              - generic [ref=e158]:
+                - separator [ref=e159]
+                - generic [ref=e160]:
+                  - paragraph [ref=e161]: "2"
+                  - generic [ref=e162]:
+                    - heading "Order and pay for the service" [level=1] [ref=e163]
+                    - paragraph [ref=e164]: Preparation of the route will take from 2 to 5 days
+                - separator [ref=e165]
+              - generic [ref=e167]:
+                - separator [ref=e168]
+                - generic [ref=e169]:
+                  - paragraph [ref=e170]: "3"
+                  - generic [ref=e171]:
+                    - heading "Free balcony" [level=1] [ref=e172]
+                    - paragraph [ref=e173]: If you can’t be there at the agreed time, then leave the packages at the concierge but be sure to notify the Courier
+                - separator [ref=e174]
+              - generic [ref=e176]:
+                - separator [ref=e177]
+                - generic [ref=e178]:
+                  - paragraph [ref=e179]: "4"
+                  - generic [ref=e180]:
+                    - heading "View your statistics" [level=1] [ref=e181]
+                    - paragraph [ref=e182]: Keep track of your order history
+                - separator [ref=e183]
+          - generic [ref=e185]:
+            - generic [ref=e186]:
+              - generic [ref=e187]:
+                - heading "Working hours" [level=2] [ref=e188]
+                - paragraph [ref=e189]: Monday-Friday from 09:30 to 17:30
+              - generic [ref=e190]:
+                - heading "Technical support" [level=2] [ref=e191]
+                - paragraph [ref=e192]: 7 days a week from 9:00 a.m. to 7:00 p.m.
+              - generic [ref=e193]:
+                - heading "Route forming time" [level=2] [ref=e194]
+                - paragraph [ref=e195]:
+                  - paragraph [ref=e196]: From 2 to 5 business days
+                  - paragraph [ref=e197]: For suburbs - from 10 working days
+            - generic [ref=e198]:
+              - button "Order" [ref=e199] [cursor=pointer]
+              - generic [ref=e200]:
+                - text: Get free products shipping
+                - link "NOWASTE SHOP" [ref=e201] [cursor=pointer]:
+                  - /url: https://shop.nowaste.com.ua/
+        - contentinfo [ref=e203]:
+          - generic [ref=e204]:
+            - button "Footer logo" [ref=e206] [cursor=pointer]:
+              - img "Footer logo" [ref=e207]
+            - list [ref=e208]:
+              - listitem [ref=e209]:
+                - link "About service" [ref=e210] [cursor=pointer]:
+                  - /url: ""
+              - listitem [ref=e211]:
+                - link "Sorting rules" [ref=e212] [cursor=pointer]:
+                  - /url: https://nowaste.com.ua/sort-station/
+              - listitem [ref=e213]:
+                - link "User agreement" [ref=e214] [cursor=pointer]:
+                  - /url: "#/ubs/user-agreement"
+              - listitem [ref=e215]:
+                - link "Eco-Shop" [ref=e216] [cursor=pointer]:
+                  - /url: https://shop.nowaste.com.ua/
+              - listitem [ref=e217]:
+                - link "Green City" [ref=e218] [cursor=pointer]:
+                  - /url: "#/greenCity"
+            - generic [ref=e219]:
+              - link "Facebook icon" [ref=e221] [cursor=pointer]:
+                - /url: https://www.facebook.com/pickupcityua
+                - img "Facebook icon" [ref=e222]
+              - link "Instagram icon" [ref=e224] [cursor=pointer]:
+                - /url: https://www.instagram.com/pickup_city/
+                - img "Instagram icon" [ref=e225]
+              - link "Email icon" [ref=e227] [cursor=pointer]:
+                - /url: mailto:pickup@nowaste.org.uk
+                - img "Email icon" [ref=e228]
+          - paragraph [ref=e229]: Copyright © 2026 · All Rights Reserved
+  - button "chat" [ref=e230] [cursor=pointer]:
+    - img "chat" [ref=e231]
+```
+
+# Test source
+
+```ts
+  1  | import { Locator, Page } from '@playwright/test';
+  2  | import { allure } from 'allure-playwright';
+  3  | 
+  4  | export class HeaderComponent {
+  5  |   readonly page: Page;
+  6  |   readonly signInButton: Locator;
+  7  | 
+  8  |   constructor(page: Page) {
+  9  |     this.page = page;
+  10 |     
+  11 |     this.signInButton = page.locator('a, button').filter({ hasText: 'Sign in' });
+  12 |   }
+  13 | 
+  14 |   async clickSignInButton(): Promise<void> {
+  15 |     await allure.step('Click Sign In button in header', async () => {
+  16 |       
+  17 |       await this.page.waitForLoadState('domcontentloaded');
+  18 |       
+> 19 |       await this.signInButton.click();
+     |                               ^ Error: locator.click: Test timeout of 30000ms exceeded.
+  20 |     });
+  21 |   }
+  22 | }
+```

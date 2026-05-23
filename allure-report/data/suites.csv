@@ -1,0 +1,4 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","1964","has title","","2026-05-23","passed","2026-05-23","","example.spec.ts","",""
+"","1698","get started link","","2026-05-23","passed","2026-05-23","","example.spec.ts","",""
+"","2231","framework smoke test","","2026-05-23","passed","2026-05-23","","smoke.spec.ts","",""
