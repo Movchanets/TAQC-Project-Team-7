@@ -1,33 +1,20 @@
 import { defineConfig, devices } from '@playwright/test';
-import { ENV } from './utils/env';
 
 export default defineConfig({
-  // Directory where test files are located
   testDir: './tests',
-
-  // Global timeout per test (ms)
-  timeout: ENV.TIMEOUT,
-
-  // Number of retries on failure
-  retries: ENV.RETRIES,
-
-  // Reporter output
-  reporter: [['html', { open: 'never' }], ['list']],
-
+  fullyParallel: true,
+  retries: 1,
+  workers: undefined,
+  reporter: [
+    ['list'],
+    ['allure-playwright']
+  ],
   use: {
-    // Base URL for page.goto('/') calls
-    baseURL: ENV.BASE_URL,
-
-    // Run browsers headlessly or with a UI window
-    headless: ENV.HEADLESS,
-
-    // Collect trace on first retry for debugging
-    trace: 'on-first-retry',
-
-    // Capture screenshot only on failure
+    baseURL: 'https://www.greencity.cx.ua/',
     screenshot: 'only-on-failure',
+    trace: 'retain-on-failure',
+    ignoreHTTPSErrors: true,
   },
-
   projects: [
     {
       name: 'chromium',
