@@ -52,6 +52,9 @@ jobs:
       run: npx playwright install-deps
 
     - name: Run Playwright tests
+      env:
+        LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
+        LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
       run: npx playwright test --reporter=line,allure-playwright
       continue-on-error: true
 
@@ -75,7 +78,7 @@ jobs:
     - name: Generate Allure Report natively
       if: always()
       # Використовуємо нативну CLI утиліту для генерації звіту
-      run: npx allure-commandline generate allure-results -o allure-report --clean
+      run: npx allure generate allure-results -o allure-report
 
     - name: Allure Pull Request Action (Official)
       # Цей крок з вашого посилання. Спрацьовує лише на PR і додає коментар зі статистикою
