@@ -1,20 +1,13 @@
-import { test, expect } from '@playwright/test';
-import { HomePage } from '../pages/home.page';
-import { LoginPage } from '../pages/login.page';
+import { test, expect } from '../fixtures/index';
 
 test.describe('Login Tests', () => {
-  let homePage: HomePage;
-  let loginPage: LoginPage;
 
-  test.beforeEach(async ({ page }) => {
-    homePage = new HomePage(page);
-    loginPage = new LoginPage(page);
-
+  test.beforeEach(async ({ homePage }) => {
     await homePage.navigate();
     await homePage.header.clickLogin(); 
   });
 
-  test('User cannot login with invalid credentials', async () => {
+  test('User cannot login with invalid credentials', async ({ loginPage }) => {
     await loginPage.login('wrong-email@test.com', 'InvalidPassword123');
     await expect(loginPage.errorMessage).toBeVisible();
   });

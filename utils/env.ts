@@ -17,4 +17,6 @@ export const ENV = {
   HEADLESS: requireEnv('HEADLESS', 'true') === 'true',
   RETRIES: parseInt(requireEnv('RETRIES', '0'), 10),
   TIMEOUT: parseInt(requireEnv('TIMEOUT', '30000'), 10),
+  LOGIN_EMAIL: requireEnv('LOGIN_EMAIL'),
+  LOGIN_PASSWORD: requireEnv('LOGIN_PASSWORD'),
 } as const;
