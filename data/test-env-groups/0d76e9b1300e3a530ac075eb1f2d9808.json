@@ -1,1 +1,1 @@
-{"id":"0d76e9b1300e3a530ac075eb1f2d9808","fullName":"createNews.spec.ts:17:7","name":"TC-01.1 Verify presence and order of all necessary fields","status":"broken","testResultsByEnv":{"default":"500f966efe443c0b98f75cc067c77205"}}
+{"id":"0d76e9b1300e3a530ac075eb1f2d9808","fullName":"createNews.spec.ts:17:7","name":"TC-01.1 Verify presence and order of all necessary fields","status":"failed","testResultsByEnv":{"default":"c06624cd17dacc188fc1fddc0e8ede79"}}
