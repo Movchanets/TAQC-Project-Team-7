@@ -1,4 +1,5 @@
 name: Playwright Tests
+
 on:
   push:
     branches: [ main, master ]
@@ -6,7 +7,9 @@ on:
     branches: [ main, master ]
 
 permissions:
-  contents: write
+  contents: write      # Необхідно для деплою на GitHub Pages
+  pull-requests: write # Необхідно для коментарів Allure у PR
+  checks: write        # Необхідно для Allure Quality Gate перевірок
 
 env:
   BASE_URL: https://www.greencity.cx.ua/#/greenCity
@@ -15,46 +18,60 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
       with:
         node-version: lts/*
+
     - name: Install dependencies
       run: npm ci
+
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test
-      
-    - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
 
-    - name: Get Allure history
-      uses: actions/checkout@v4
-      if: ${{ !cancelled() }}
+    - name: Run Playwright tests
+      run: npx playwright test --reporter=line,allure-playwright
       continue-on-error: true
+
+    - name: Get Allure history from gh-pages
+      uses: actions/checkout@v4
+      if: always()
+      continue-on-error: true # Не впаде при першому запуску, коли гілки gh-pages ще не існує
       with:
         ref: gh-pages
         path: gh-pages
 
-    - name: Allure Report action
-      uses: simple-elf/allure-report-action@v1.7
-      if: ${{ !cancelled() }}
+    - name: Prepare Allure history
+      if: always()
+      # Ручне копіювання історії замість simple-elf
+      run: |
+        if [ -d "gh-pages/history" ]; then
+          mkdir -p allure-results/history
+          cp -r gh-pages/history/* allure-results/history/
+        fi
+
+    - name: Generate Allure Report natively
+      if: always()
+      # Використовуємо нативну CLI утиліту для генерації звіту
+      run: npx allure-commandline generate allure-results -o allure-report --clean
+
+    - name: Allure Pull Request Action (Official)
+      # Цей крок з вашого посилання. Спрацьовує лише на PR і додає коментар зі статистикою
+      uses: allure-framework/allure-action@v0
+      if: github.event_name == 'pull_request' && always()
       with:
-        allure_results: allure-results
-        allure_history: allure-history
-        gh_pages: gh-pages
+        report-directory: "./allure-report"
+        github-token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Deploy report to Github Pages
       uses: peaceiris/actions-gh-pages@v4
-      if: ${{ !cancelled() }}
+      if: always()
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_branch: gh-pages
-        publish_dir: allure-history
-
+        publish_dir: allure-report
