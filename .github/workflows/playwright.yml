@@ -75,7 +75,7 @@ jobs:
     - name: Generate Allure Report natively
       if: always()
       # Використовуємо нативну CLI утиліту для генерації звіту
-      run: npx allure-commandline generate allure-results -o allure-report --clean
+      run: npx allure generate allure-results -o allure-report
 
     - name: Allure Pull Request Action (Official)
       # Цей крок з вашого посилання. Спрацьовує лише на PR і додає коментар зі статистикою
