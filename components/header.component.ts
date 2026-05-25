@@ -18,6 +18,8 @@ export class HeaderComponent extends BaseComponent {
   }
 
   async clickLogin() {
+    // We wait for 'attached' state and use evaluate-click because Playwright
+    // may consider the login button non-visible depending on the viewport/responsive layout.
     await this.loginButton.waitFor({ state: 'attached', timeout: 5000 });
     await this.loginButton.evaluate((element: HTMLElement) => element.click());
   }

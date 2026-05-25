@@ -9,3 +9,4 @@ test-results/
 /playwright/.cache/
 /playwright/.auth/
 agents.md
+allure-results/

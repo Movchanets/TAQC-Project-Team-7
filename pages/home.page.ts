@@ -1,9 +1,9 @@
 import { Page } from '@playwright/test';
 import { BasePage } from './base.page';
-import { HeaderComponent } from '../components/header.component'; // Перевір цей шлях!
+import { HeaderComponent } from '../components/header.component';
+import { ENV } from '../utils/env';
 
 export class HomePage extends BasePage {
-  // Цей рядок обов'язковий, щоб тест бачив слово "header"!
   readonly header: HeaderComponent; 
 
   constructor(page: Page) {
@@ -12,6 +12,8 @@ export class HomePage extends BasePage {
   }
 
   async navigate() {
-    await this.page.goto('#/greenCity');
+    const url = new URL(ENV.BASE_URL);
+    const targetRoute = url.hash || '#/greenCity';
+    await this.page.goto(targetRoute);
   }
 }

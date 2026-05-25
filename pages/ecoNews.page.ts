@@ -3,7 +3,8 @@ import { BasePage } from './base.page';
 
 /**
  * EcoNewsPage
- * * Handles interactions with the Eco News page, listing items,
+ *
+ * Handles interactions with the Eco News page, listing items,
  * and navigating to the news creation form.
  */
 export class EcoNewsPage extends BasePage {
@@ -11,7 +12,7 @@ export class EcoNewsPage extends BasePage {
   readonly newsItems: Locator;
 
   constructor(page: Page) {
-    super(page); // Передаємо page в abstract BasePage
+    super(page);
     
     // Локатори для GreenCity EcoNews
     this.createNewsButton = page.locator('#create-button, button:has-text("Create news")');
