@@ -1,45 +1,36 @@
-import { defineConfig, devices } from '@playwright/test';
-import { ENV } from './utils/env';
+import { defineConfig, devices } from "@playwright/test";
+import { ENV } from "./utils/env";
+
+// Extract the base domain URL from ENV.BASE_URL to support relative routing with hashes
+const baseUri = new URL(ENV.BASE_URL);
+const domainBaseUrl = `${baseUri.protocol}//${baseUri.host}/`;
 
 export default defineConfig({
-  // Directory where test files are located
-  testDir: './tests',
-
-  // Global timeout per test (ms)
+  testDir: "./tests",
+  fullyParallel: true,
   timeout: ENV.TIMEOUT,
-
-  // Number of retries on failure
   retries: ENV.RETRIES,
-
-  // Reporter output
-  reporter: [['html', { open: 'never' }], ['list']],
-
+  workers: undefined,
+  reporter: [["list"], ["html", { open: "never" }], ["allure-playwright"]],
   use: {
-    // Base URL for page.goto('/') calls
-    baseURL: ENV.BASE_URL,
-
-    // Run browsers headlessly or with a UI window
+    baseURL: domainBaseUrl,
     headless: ENV.HEADLESS,
-
-    // Collect trace on first retry for debugging
-    trace: 'on-first-retry',
-
-    // Capture screenshot only on failure
-    screenshot: 'only-on-failure',
+    screenshot: "only-on-failure",
+    trace: "retain-on-failure",
+    ignoreHTTPSErrors: true,
   },
-
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
     },
     {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      name: "firefox",
+      use: { ...devices["Desktop Firefox"] },
     },
     {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+      name: "webkit",
+      use: { ...devices["Desktop Safari"] },
     },
   ],
 });
