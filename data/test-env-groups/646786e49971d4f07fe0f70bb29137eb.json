@@ -1,1 +1,1 @@
-{"id":"646786e49971d4f07fe0f70bb29137eb","fullName":"createNews.spec.ts:112:7","name":"TC-01.3 Verify Tag buttons selection and appearance behavior","status":"broken","testResultsByEnv":{"default":"6f5e6204babcf5c7d48f15afb862009a"}}
+{"id":"646786e49971d4f07fe0f70bb29137eb","fullName":"createNews.spec.ts:80:7","name":"TC-01.3 Verify Tag buttons selection and appearance behavior","status":"passed","testResultsByEnv":{"default":"6c3828e7d244144be81a65079f26a2be"}}

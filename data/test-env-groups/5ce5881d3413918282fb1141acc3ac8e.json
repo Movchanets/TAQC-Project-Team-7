@@ -1,1 +1,1 @@
-{"id":"5ce5881d3413918282fb1141acc3ac8e","fullName":"createNews.spec.ts:83:7","name":"TC-01.2 Verify pre-filled and non-editable Author and Date fields","status":"passed","testResultsByEnv":{"default":"22633a51beac5c6435fa719eab82c296"}}
+{"id":"5ce5881d3413918282fb1141acc3ac8e","fullName":"createNews.spec.ts:51:7","name":"TC-01.2 Verify pre-filled and non-editable Author and Date fields","status":"passed","testResultsByEnv":{"default":"533948b94cea0d69e4198d2cc0f11525"}}

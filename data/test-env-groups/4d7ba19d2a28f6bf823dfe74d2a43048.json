@@ -1,1 +1,1 @@
-{"id":"4d7ba19d2a28f6bf823dfe74d2a43048","fullName":"createNews.spec.ts:133:7","name":"TC-01.4 Verify Title and Main Text character counters and placeholders","status":"passed","testResultsByEnv":{"default":"51d27f04c048c9fc5b2f64a22714d243"}}
+{"id":"4d7ba19d2a28f6bf823dfe74d2a43048","fullName":"createNews.spec.ts:101:7","name":"TC-01.4 Verify Title and Main Text character counters and placeholders","status":"passed","testResultsByEnv":{"default":"ef514bd332a19c829ad2a14dc7941651"}}
