@@ -1,1 +1,1 @@
-{"id":"69caca19007eaddeff9b56953a64aa1b","fullName":"login.spec.ts:10:7","name":"User cannot login with invalid credentials","status":"passed","testResultsByEnv":{"default":"c67e740a631cd9902988771e81245c5c"}}
+{"id":"69caca19007eaddeff9b56953a64aa1b","fullName":"login.spec.ts:12:7","name":"User cannot login with invalid credentials","status":"passed","testResultsByEnv":{"default":"f10cb49b905320d019b391f05f7a7312"}}

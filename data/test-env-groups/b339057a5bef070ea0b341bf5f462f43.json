@@ -1,1 +1,1 @@
-{"id":"b339057a5bef070ea0b341bf5f462f43","fullName":"smoke.spec.ts:9:5","name":"framework smoke test","status":"passed","testResultsByEnv":{"default":"b8bd086081ddfa9cba1de8580728f4dd"}}
+{"id":"b339057a5bef070ea0b341bf5f462f43","fullName":"smoke.spec.ts:9:5","name":"framework smoke test","status":"failed","testResultsByEnv":{"default":"689538caeb63cc5ed918c5f5fe226180"}}
