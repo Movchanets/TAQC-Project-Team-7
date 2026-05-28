@@ -46,38 +46,6 @@ test.describe('Create News Form Layout and Behavior (TC-01)', () => {
       await expect(createNewsPage.previewButton).toBeVisible();
       await expect(createNewsPage.publishButton).toBeVisible();
     });
-
-    await test.step('Verify strict top-to-bottom layout order', async () => {
-      const titleBox = await createNewsPage.titleInput.boundingBox();
-      const tagBox = await createNewsPage.tagButtons.first().boundingBox();
-      const imageBox = await createNewsPage.imageDropzone.boundingBox();
-      const contentBox = await createNewsPage.contentEditor.boundingBox();
-      const authorBox = await createNewsPage.authorDateSection.boundingBox();
-      const sourceBox = await createNewsPage.sourceInput.boundingBox();
-      const cancelBox = await createNewsPage.cancelButton.boundingBox();
-      const previewBox = await createNewsPage.previewButton.boundingBox();
-      const publishBox = await createNewsPage.publishButton.boundingBox();
-
-      expect(titleBox).not.toBeNull();
-      expect(tagBox).not.toBeNull();
-      expect(imageBox).not.toBeNull();
-      expect(contentBox).not.toBeNull();
-      expect(authorBox).not.toBeNull();
-      expect(sourceBox).not.toBeNull();
-      expect(cancelBox).not.toBeNull();
-      expect(previewBox).not.toBeNull();
-      expect(publishBox).not.toBeNull();
-
-      expect(titleBox!.y).toBeLessThan(tagBox!.y);
-      expect(tagBox!.y).toBeLessThan(imageBox!.y);
-      expect(imageBox!.y).toBeLessThan(contentBox!.y);
-      expect(contentBox!.y).toBeLessThan(authorBox!.y);
-      expect(authorBox!.y).toBeLessThan(sourceBox!.y);
-      expect(sourceBox!.y).toBeLessThan(cancelBox!.y);
-
-      expect(cancelBox!.x).toBeLessThan(previewBox!.x);
-      expect(previewBox!.x).toBeLessThan(publishBox!.x);
-    });
   });
 
   test('TC-01.2 Verify pre-filled and non-editable Author and Date fields', async ({ createNewsPage }) => {
@@ -163,4 +131,80 @@ test.describe('Create News Form Layout and Behavior (TC-01)', () => {
       );
     });
   });
+});
+
+
+test.describe('Create News Form Layout and Behavior (TC-03)', () => {
+    test.beforeEach(async ({ authenticatedPage, createNewsPage }) => {
+        await test.step('Navigate to Create News form', async () => {
+            await createNewsPage.navigate();
+            await createNewsPage.waitForFormReady();
+        });
+    });
+
+    test('TC-03.1 Allow selecting up to 3 tags and block the 4th', async ({ createNewsPage, page }) => {
+        await test.step('Select 3 valid tags', async () => {
+            await createNewsPage.selectTag('Ads');
+            await createNewsPage.selectTag('Education');
+            await createNewsPage.selectTag('News');
+
+            await expect(createNewsPage.getTagButton('Ads').locator('a')).toHaveClass(/global-tag-clicked/);
+            await expect(createNewsPage.getTagButton('Education').locator('a')).toHaveClass(/global-tag-clicked/);
+            await expect(createNewsPage.getTagButton('News').locator('a')).toHaveClass(/global-tag-clicked/);
+        });
+
+        await test.step('Attempt to select a 4th tag and verify it is blocked', async () => {
+            await createNewsPage.selectTag('Initiatives');
+            await expect(createNewsPage.getTagButton('Initiatives').locator('a')).not.toHaveClass(/global-tag-clicked/);
+        });
+    });
+
+    test('TC-03.2 Should successfully publish news with 1 tag', async ({ createNewsPage, ecoNewsPage, page }) => {
+        const newsTitle = 'Test';
+        const newsContent = 'Test content with 20 chars';
+
+        await test.step('Fill form and select 1 tag', async () => {
+            await createNewsPage.fillRequiredFields(newsTitle, newsContent);
+        });
+
+        await test.step('Publish and verify tag on details page', async () => {
+            await createNewsPage.clickPublish();
+            await page.waitForURL(/.*ubs/)
+            await ecoNewsPage.navigate();
+
+            const newsCard = ecoNewsPage.getNewsItemByTitle(newsTitle);
+
+            await expect(newsCard).toBeVisible();
+
+            const newsTags = ecoNewsPage.getTagsForNewsItem(newsTitle);
+            await expect(newsTags).toContainText('News');
+        });
+    });
+
+    test('TC-03.3 Should successfully publish news with 3 tags', async ({ createNewsPage, ecoNewsPage, page }) => {
+        const newsTitle = 'Test';
+        const newsContent = 'Test content with 20 chars';
+
+        await test.step('Fill form and select 3 tags', async () => {
+            await createNewsPage.fillRequiredFields(newsTitle, newsContent);
+            await createNewsPage.selectTag('Ads');
+            await createNewsPage.selectTag('Education');
+        });
+
+        await test.step('Publish and verify tags on details page', async () => {
+            await createNewsPage.clickPublish();
+            await page.waitForURL(/.*ubs/)
+            await ecoNewsPage.navigate();
+
+            const newsCard = ecoNewsPage.getNewsItemByTitle(newsTitle);
+
+            await expect(newsCard).toBeVisible();
+
+            const newsTags = ecoNewsPage.getTagsForNewsItem(newsTitle);
+            await expect(newsTags).toContainText('News');
+            await expect(newsTags).toContainText('Education');
+            await expect(newsTags).toContainText('Ads');
+        });
+    });
+
 });

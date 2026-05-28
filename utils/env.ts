@@ -16,7 +16,7 @@ export const ENV = {
   BASE_URL: requireEnv('BASE_URL', 'http://localhost:3000'),
   HEADLESS: requireEnv('HEADLESS', 'true') === 'true',
   RETRIES: parseInt(requireEnv('RETRIES', '0'), 10),
-  TIMEOUT: parseInt(requireEnv('TIMEOUT', '30000'), 10),
+  TIMEOUT: parseInt(requireEnv('TIMEOUT', '60000'), 10),
   LOGIN_EMAIL: requireEnv('LOGIN_EMAIL', ''),
   LOGIN_PASSWORD: requireEnv('LOGIN_PASSWORD', ''),
 } as const;

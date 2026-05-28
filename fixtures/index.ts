@@ -75,9 +75,7 @@ export const test = base.extend<AppFixtures>({
     // 4. Wait for modal backdrop to dismiss
     await page
       .locator('.cdk-overlay-backdrop')
-      .waitFor({ state: 'detached', timeout: TIMEOUTS.LONG })
-      .catch(() => {});
-
+      .waitFor({ state: 'detached', timeout: 15000 });
     // 5. Pass authenticated page
     await use(page);
   },
@@ -95,13 +93,15 @@ export const test = base.extend<AppFixtures>({
     // Wait for auth to settle
     await page.waitForURL(
       (url) => !url.hash.includes('signin') && !url.hash.includes('login'),
-      { timeout: TIMEOUTS.NAVIGATION }
+      { timeout: 15000 }
     );
 
-    await page
-      .locator('.cdk-overlay-backdrop')
-      .waitFor({ state: 'detached', timeout: TIMEOUTS.LONG })
-      .catch(() => {});
+    const backdrop = page.locator('.cdk-overlay-backdrop');
+    if (await backdrop.count() > 0) {
+      await backdrop.waitFor({ state: 'hidden', timeout: 15000 });
+    }
+
+    await page.waitForLoadState('domcontentloaded');
 
     await use(undefined as unknown as void);
   },
