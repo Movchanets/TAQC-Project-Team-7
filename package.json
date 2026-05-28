@@ -1,13 +1,29 @@
 {
-  "name": "taqc-repo-here",
+  "name": "greencity-e2e-tests",
   "version": "1.0.0",
-  "description": "A clean, scalable end-to-end testing framework built with **Playwright** and **TypeScript**, following the Page Object Model (POM) design pattern.",
+  "description": "E2E test automation framework for GreenCity platform using Playwright, TypeScript, POM, and Allure reporting.",
   "main": "index.js",
   "directories": {
     "test": "tests"
   },
-  "scripts": {},
-  "keywords": [],
+  "scripts": {
+    "test": "npx playwright test --project=chromium",
+    "test:all": "npx playwright test",
+    "test:headed": "npx playwright test --project=chromium --headed",
+    "test:debug": "npx playwright test --project=chromium --debug",
+    "test:ui": "npx playwright test --ui",
+    "report": "npx allure generate allure-results -o allure-report --clean && npx allure open allure-report",
+    "report:ci": "npx allure generate allure-results -o allure-report --clean",
+    "report:open": "npx allure open allure-report",
+    "playwright:install": "npx playwright install --with-deps"
+  },
+  "keywords": [
+    "playwright",
+    "e2e",
+    "testing",
+    "greencity",
+    "allure"
+  ],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
@@ -15,7 +31,8 @@
     "@playwright/test": "^1.59.1",
     "@types/node": "^25.6.0",
     "allure": "^3.8.2",
-    "allure-playwright": "^3.9.0"
+    "allure-playwright": "^3.9.0",
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "dotenv": "^17.4.2"

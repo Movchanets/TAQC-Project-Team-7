@@ -2,24 +2,23 @@ import { Locator, Page } from '@playwright/test';
 import { BasePage } from './base.page';
 import { HeaderComponent } from '../components/header.component';
 import { ENV } from '../utils/env';
+import { ROUTES, TIMEOUTS } from '../utils/constants';
 
 /**
  * ProfilePage
  *
- * Page Object Model representing the user's profile area (`#/greenCity/profile`).
- * Encapsulates the user card, stat trackers, achievements, friends, eco places,
- * dashboard tabs, calendar, and task lists.
+ * Page Object for the user profile area (`#/greenCity/profile`).
  */
 export class ProfilePage extends BasePage {
   readonly header: HeaderComponent;
 
-  // Left Column Elements (User Card & stats)
+  // Left Column (User Card & stats)
   readonly userName: Locator;
   readonly userRating: Locator;
   readonly editIcon: Locator;
   readonly habitStats: Locator;
-  
-  // Left Column Sections (Achievements, Friends, Eco Places)
+
+  // Left Column Sections
   readonly achievementsTitle: Locator;
   readonly achievementsCount: Locator;
   readonly friendsTitle: Locator;
@@ -28,11 +27,11 @@ export class ProfilePage extends BasePage {
   readonly ecoPlacesTitle: Locator;
   readonly ecoPlacesCount: Locator;
 
-  // Middle Column Elements (Tabs Dashboard)
+  // Middle Column (Dashboard Tabs)
   readonly tabs: Locator;
   readonly addNewsButton: Locator;
 
-  // Right Column Elements (Sidebar widgets)
+  // Right Column (Sidebar widgets)
   readonly calendarMonth: Locator;
   readonly factOfDayCard: Locator;
   readonly todoItemsCount: Locator;
@@ -41,13 +40,13 @@ export class ProfilePage extends BasePage {
     super(page);
     this.header = new HeaderComponent(page);
 
-    // Left Column Locators
+    // Left Column
     this.userName = page.locator('app-profile-header p.name, app-profile-header .name');
     this.userRating = page.locator('app-profile-header .rate');
     this.editIcon = page.locator('app-profile-header .edit-icon');
     this.habitStats = page.locator('app-profile-header .profile-progress');
 
-    // Left Column Section-specific elements
+    // Left Column Sections
     this.achievementsTitle = page.locator('app-users-achievements .title-achievements');
     this.achievementsCount = page.locator('app-users-achievements .achieved-quantity');
     this.friendsTitle = page.locator('app-users-friends .text-title');
@@ -56,48 +55,51 @@ export class ProfilePage extends BasePage {
     this.ecoPlacesTitle = page.locator('app-eco-places .title');
     this.ecoPlacesCount = page.locator('app-eco-places .favourites-quantity');
 
-    // Middle Column Tab group elements
+    // Middle Column
     this.tabs = page.locator('div[role="tab"]');
     this.addNewsButton = page.locator('#create-button-news');
 
-    // Right Column Elements
+    // Right Column
     this.calendarMonth = page.locator('app-calendar .month-year');
     this.factOfDayCard = page.locator('app-profile-cards .card').first();
     this.todoItemsCount = page.locator('app-to-do-list .items-count:visible');
   }
 
-  /**
-   * Navigate directly to the profile page
-   */
-  async navigate() {
+  /** Navigate directly to the profile page. */
+  async navigate(): Promise<void> {
     const url = new URL(ENV.BASE_URL);
-    const targetRoute = `${url.hash || '#/greenCity'}/profile`;
+    const targetRoute = `${url.hash || ROUTES.HOME}/profile`;
     await this.page.goto(targetRoute);
   }
 
-  /**
-   * Click a dashboard tab by its visible label (e.g. 'My habits', 'My news', 'My Events')
-   * @param tabName Name of the tab to click
-   */
-  async clickTab(tabName: string) {
-    const tab = this.tabs.filter({ hasText: tabName });
-    await tab.waitFor({ state: 'visible', timeout: 5000 });
-    await tab.click();
+  /** Wait for the profile page to be fully rendered. */
+  async waitForPageReady(): Promise<void> {
+    await this.waitForVisible(this.userName.first(), TIMEOUTS.LONG);
+    await this.page.waitForTimeout(300);
   }
 
-  /**
-   * Click the "Add news" button (active inside the "My news" tab)
-   */
-  async clickAddNews() {
-    await this.addNewsButton.waitFor({ state: 'visible', timeout: 5000 });
-    await this.addNewsButton.click();
+  /** Click a dashboard tab by its visible label (regex supported). */
+  async clickTab(tabName: string | RegExp): Promise<void> {
+    await this.step(`Click tab: ${tabName}`, async () => {
+      const tab = this.tabs.filter({ hasText: tabName });
+      await this.waitForVisible(tab, TIMEOUTS.MEDIUM);
+      await tab.click();
+    });
   }
 
-  /**
-   * Click the "Edit profile" pencil button
-   */
-  async clickEditProfile() {
-    await this.editIcon.waitFor({ state: 'visible', timeout: 5000 });
-    await this.editIcon.click();
+  /** Click the "Add news" button (visible inside "My news" tab). */
+  async clickAddNews(): Promise<void> {
+    await this.step('Click "Add news"', async () => {
+      await this.waitForVisible(this.addNewsButton, TIMEOUTS.MEDIUM);
+      await this.addNewsButton.click();
+    });
+  }
+
+  /** Click the "Edit profile" pencil button. */
+  async clickEditProfile(): Promise<void> {
+    await this.step('Click "Edit profile"', async () => {
+      await this.waitForVisible(this.editIcon, TIMEOUTS.MEDIUM);
+      await this.editIcon.click();
+    });
   }
 }
