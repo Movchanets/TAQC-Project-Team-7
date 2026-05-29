@@ -1,0 +1,1 @@
+{"id":"97d9d0648aee0aa41026c29e903527e3","fullName":"cancelNews.spec.ts:15:7","name":"TC-07.1 Cancel button triggers confirmation modal; \"Yes, cancel\" closes form and redirects to news page","status":"failed","testResultsByEnv":{"default":"335de6e08c814097b3f23c85f5fc9b60"}}
