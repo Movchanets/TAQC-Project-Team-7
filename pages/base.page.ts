@@ -1,5 +1,6 @@
 import { Page, type Locator } from '@playwright/test';
 import * as allure from 'allure-js-commons';
+import { ENV } from '../utils/env';
 
 /**
  * BasePage
@@ -15,10 +16,20 @@ export abstract class BasePage {
   }
 
   /**
-   * Navigate to the page's primary URL.
-   * Must be overridden by each concrete page class.
+   * The route hash for this page (e.g., '#/greenCity/news').
+   * Override in concrete page classes that support direct navigation.
    */
-  abstract navigate(): Promise<void>;
+  abstract get url(): string;
+
+  /**
+   * Navigate to the page's primary URL using the hash-based route.
+   * Override in subclasses for custom navigation (modals, parameterized URLs).
+   */
+  async navigate(): Promise<void> {
+    const base = new URL(ENV.BASE_URL);
+    const targetRoute = base.hash || this.url;
+    await this.page.goto(targetRoute);
+  }
 
   /**
    * Wait for the page to be fully ready.
@@ -32,7 +43,7 @@ export abstract class BasePage {
   /**
    * Wait for a specific locator to be visible with a configurable timeout.
    */
-  protected async waitForVisible(locator: Locator, timeout?: number ): Promise<void> {
+  protected async waitForVisible(locator: Locator, timeout?: number): Promise<void> {
     await locator.waitFor({ state: 'visible', timeout });
   }
 

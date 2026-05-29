@@ -6,15 +6,14 @@ import type { Locator, Page } from '@playwright/test';
  * Scoped to the <header> root element. All child locators are relative to root.
  */
 export class HeaderComponent extends BaseComponent {
-  readonly root: Locator;
   readonly logo: Locator;
   readonly loginButton: Locator;
   readonly ecoNewsLink: Locator;
   readonly navigationLinks: Locator;
 
   constructor(page: Page) {
-    super();
-    this.root = page.locator('header, app-header');
+    const root = page.locator('header, app-header');
+    super(page, root);
     this.logo = this.root.locator('.header_logo, a.logo, img[alt="logo"]');
     this.loginButton = this.root.locator('.header_sign-in-link');
     this.ecoNewsLink = this.root.locator('a[href*="news"]');

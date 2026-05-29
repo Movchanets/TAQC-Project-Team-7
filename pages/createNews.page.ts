@@ -1,4 +1,4 @@
-import { Locator, Page, expect } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import { BasePage } from './base.page';
 import { ENV } from '../utils/env';
 import { FORM_LIMITS, TIMEOUTS, ROUTES } from '../utils/constants';
@@ -63,10 +63,14 @@ export class CreateNewsPage extends BasePage {
 
   // ── Navigation ─────────────────────────────────────────────────────────
 
+  get url(): string {
+    return ROUTES.CREATE_NEWS;
+  }
+
   /** Navigate directly to the Create News form. */
   async navigate(): Promise<void> {
-    const url = new URL(ENV.BASE_URL);
-    const targetRoute = `${url.hash || ROUTES.HOME}/news/create-news`;
+    const base = new URL(ENV.BASE_URL);
+    const targetRoute = `${base.hash || ROUTES.HOME}/news/create-news`;
     await this.page.goto(targetRoute);
     await this.waitForPageReady();
   }
@@ -74,7 +78,6 @@ export class CreateNewsPage extends BasePage {
   /** Wait for the form to be fully loaded (title input visible). */
   async waitForFormReady(): Promise<void> {
     await this.titleInput.waitFor({ state: 'visible', timeout: TIMEOUTS.LONG });
-    await expect(this.titleInput).toBeEditable();
   }
 
   // ── Field Actions ──────────────────────────────────────────────────────

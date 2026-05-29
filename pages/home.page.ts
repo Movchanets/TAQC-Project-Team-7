@@ -1,7 +1,6 @@
 import { Page } from '@playwright/test';
 import { BasePage } from './base.page';
 import { HeaderComponent } from '../components/header.component';
-import { ENV } from '../utils/env';
 import { ROUTES } from '../utils/constants';
 
 /**
@@ -17,11 +16,8 @@ export class HomePage extends BasePage {
     this.header = new HeaderComponent(page);
   }
 
-  /** Navigate to the home page. */
-  async navigate(): Promise<void> {
-    const url = new URL(ENV.BASE_URL);
-    const targetRoute = url.hash || ROUTES.HOME;
-    await this.page.goto(targetRoute);
+  get url(): string {
+    return ROUTES.HOME;
   }
 
   /** Wait for the home page to be fully loaded. */

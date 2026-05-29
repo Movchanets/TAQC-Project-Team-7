@@ -1,6 +1,6 @@
-import { Locator, Page, expect } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import { BasePage } from './base.page';
-import { TIMEOUTS } from '../utils/constants';
+import { ROUTES, TIMEOUTS } from '../utils/constants';
 
 /**
  * LoginPage
@@ -23,9 +23,14 @@ export class LoginPage extends BasePage {
     this.errorMessage = page.getByText(/bad email or password|невірний email або пароль/i);
   }
 
+  /** Login is a modal — no direct URL. */
+  get url(): string {
+    throw new Error('LoginPage is a modal overlay. Use header.clickLogin() to open it.');
+  }
+
   /** Navigate — login is a modal, so this waits for the modal to be visible. */
   async navigate(): Promise<void> {
-    await this.waitForVisible(this.emailInput, 15000);
+    await this.waitForVisible(this.emailInput, TIMEOUTS.NAVIGATION);
   }
 
   /**
@@ -45,7 +50,6 @@ export class LoginPage extends BasePage {
       await this.submitButton.click();
     });
   }
-
 
   /** Check if the error message is displayed after a failed login attempt. */
   async hasError(): Promise<boolean> {

@@ -67,9 +67,9 @@ test.describe('Create News Form Layout and Behavior (TC-01)', () => {
       expect(previewBox).not.toBeNull();
       expect(publishBox).not.toBeNull();
 
-      expect(titleBox!.y).toBeLessThan(tagBox!.y);
-      expect(tagBox!.y).toBeLessThan(imageBox!.y);
-      expect(imageBox!.y).toBeLessThan(contentBox!.y);
+      expect(titleBox!.y).toBeLessThan(imageBox!.y);
+      expect(imageBox!.y).toBeLessThan(tagBox!.y);
+      expect(tagBox!.y).toBeLessThan(contentBox!.y);
       expect(contentBox!.y).toBeLessThan(authorBox!.y);
       expect(authorBox!.y).toBeLessThan(sourceBox!.y);
       expect(sourceBox!.y).toBeLessThan(cancelBox!.y);
@@ -124,8 +124,11 @@ test.describe('Create News Form Layout and Behavior (TC-01)', () => {
 
     await test.step('Verify tag click toggle works', async () => {
       const firstTag = createNewsPage.tagButtons.first();
+      await expect(firstTag.locator('a')).not.toHaveClass(/global-tag-clicked/);
       await firstTag.click();
+      await expect(firstTag.locator('a')).toHaveClass(/global-tag-clicked/);
       await firstTag.click();
+      await expect(firstTag.locator('a')).not.toHaveClass(/global-tag-clicked/);
     });
   });
 

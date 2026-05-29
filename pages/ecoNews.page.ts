@@ -1,6 +1,5 @@
 import { Locator, Page } from '@playwright/test';
 import { BasePage } from './base.page';
-import { ENV } from '../utils/env';
 import { ROUTES, TIMEOUTS } from '../utils/constants';
 
 /**
@@ -17,21 +16,17 @@ export class EcoNewsPage extends BasePage {
     super(page);
 
     this.createNewsButton = page.locator('#create-button, button:has-text("Create news")');
-    this.newsItems = page.locator('app-news-list-gallery-view, app-eco-news-list-item');
+    this.newsItems = page.locator('app-eco-news-list-item, .gallery-view-table-list');
     this.newsItemLinks = page.locator('app-eco-news-list-item a, .gallery-view-table-list a');
   }
 
-  /** Navigate to the Eco News page. */
-  async navigate(): Promise<void> {
-    const url = new URL(ENV.BASE_URL);
-    const targetRoute = `${url.hash || ROUTES.HOME}/news`;
-    await this.page.goto(targetRoute);
-    await this.waitForPageReady();
+  get url(): string {
+    return ROUTES.NEWS;
   }
 
   /** Wait for the news list to load. */
   async waitForPageReady(): Promise<void> {
-    // Wait for at least one news item or the create button
+    await this.page.waitForLoadState('networkidle');
     await Promise.race([
       this.newsItems.first().waitFor({ state: 'visible', timeout: TIMEOUTS.LONG }),
       this.createNewsButton.waitFor({ state: 'visible', timeout: TIMEOUTS.LONG }),
@@ -60,14 +55,14 @@ export class EcoNewsPage extends BasePage {
     });
   }
 
-  /** Find a news item by its title and return its locator. Assumes titles are unique on the page. */
+  /** Find a news item by its title and return its locator. */
   getNewsItemByTitle(title: string): Locator {
     return this.newsItems.filter({ hasText: title }).first();
   }
-  
- // ** Get the tags associated with a news item by its title. */
+
+  /** Get the tags associated with a news item by its title. */
   getTagsForNewsItem(title: string): Locator {
-    const newsCard = this.getNewsItemByTitle(title); 
+    const newsCard = this.getNewsItemByTitle(title);
     return newsCard.locator('.filter-tag');
   }
 }

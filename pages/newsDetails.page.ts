@@ -21,9 +21,13 @@ export class NewsDetailsPage extends BaseNewsPage {
     this.editNewsButton = page.getByRole('button', { name: /edit news|редагувати новину/i });
   }
 
+  get url(): string {
+    throw new Error('NewsDetailsPage does not have a direct URL. Use navigateToArticle().');
+  }
+
   /** Navigate — NewsDetailsPage requires a specific news ID, so direct navigation is not supported. */
   async navigate(): Promise<void> {
-    throw new Error('NewsDetailsPage requires a news article URL. Navigate to a specific news article instead.');
+    throw new Error('NewsDetailsPage requires a news article URL. Use navigateToArticle() instead.');
   }
 
   /** Navigate to a specific news article by its URL. */
