@@ -13,6 +13,7 @@ permissions:
 
 env:
   BASE_URL: https://www.greencity.cx.ua/#/greenCity
+  RETRIES: 1
 
 jobs:
   test:

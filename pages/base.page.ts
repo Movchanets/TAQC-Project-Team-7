@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { Page, type Locator } from '@playwright/test';
 import * as allure from 'allure-js-commons';
 
 /**
@@ -6,7 +6,6 @@ import * as allure from 'allure-js-commons';
  *
  * Abstract foundation for all Page Object classes.
  * Provides shared utilities: navigation, readiness checks, Allure step logging.
- * All concrete page objects must extend this class.
  */
 export abstract class BasePage {
   readonly page: Page;
@@ -22,12 +21,13 @@ export abstract class BasePage {
   abstract navigate(): Promise<void>;
 
   /**
-   * Wait for the page to be fully ready (network idle + SPA hydration).
-   * Override in subclasses to add page-specific readiness checks.
+   * Wait for the page to be fully ready.
+   * Uses 'load' instead of 'networkidle' — GreenCity has persistent
+   * WebSocket (STOMP) connections that prevent networkidle from resolving.
    */
   async waitForPageReady(): Promise<void> {
-    await this.page.waitForLoadState('networkidle');
-    await this.page.waitForTimeout(500); // SPA hydration buffer
+    await this.page.waitForLoadState('load');
+    await this.page.waitForTimeout(500);
   }
 
   /**
@@ -39,7 +39,6 @@ export abstract class BasePage {
 
   /**
    * Execute a step with Allure logging.
-   * Wraps allure.step() for consistent reporting across all page objects.
    */
   protected async step<T>(name: string, fn: () => Promise<T>): Promise<T> {
     return allure.step(name, fn);

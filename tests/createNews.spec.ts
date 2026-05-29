@@ -1,9 +1,8 @@
 import { test, expect } from '../fixtures/index';
-import { TIMEOUTS } from '../utils/constants';
 
 test.describe('Create News Form Layout and Behavior (TC-01)', () => {
 
-  test.beforeEach(async ({ authenticatedPage, createNewsPage }) => {
+  test.beforeEach(async ({ createNewsPage }) => {
     await test.step('Navigate to Create News form', async () => {
       await createNewsPage.navigate();
       await createNewsPage.waitForFormReady();
@@ -126,7 +125,7 @@ test.describe('Create News Form Layout and Behavior (TC-01)', () => {
     await test.step('Verify tag click toggle works', async () => {
       const firstTag = createNewsPage.tagButtons.first();
       await firstTag.click();
-      await firstTag.click(); // Toggle off
+      await firstTag.click();
     });
   });
 
@@ -143,7 +142,7 @@ test.describe('Create News Form Layout and Behavior (TC-01)', () => {
 
     await test.step('Fill Title and verify counter updates to 25/170', async () => {
       const sampleTitle = 'Automated Test News Title';
-      await createNewsPage.titleInput.fill(sampleTitle);
+      await createNewsPage.fillTitle(sampleTitle);
       const updatedCounterPattern = new RegExp(`${sampleTitle.length}\\s*\\/\\s*170`);
       const updatedTitleCounter = createNewsPage.page.locator('span, div, p').filter({ hasText: updatedCounterPattern }).first();
       await expect(updatedTitleCounter).toBeVisible();

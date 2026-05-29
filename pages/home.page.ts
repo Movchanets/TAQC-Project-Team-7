@@ -27,6 +27,6 @@ export class HomePage extends BasePage {
   /** Wait for the home page to be fully loaded. */
   async waitForPageReady(): Promise<void> {
     await this.header.waitForReady();
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('load');
   }
 }

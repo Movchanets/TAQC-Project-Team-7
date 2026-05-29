@@ -27,7 +27,6 @@ export class CreateNewsPage extends BasePage {
 
   // ── Validation & Feedback ────────────────────────────────────────────
   readonly titleCounter: Locator;
-  readonly contentCounter: Locator;
   readonly validationErrors: Locator;
 
   // ── Cancel Modal ─────────────────────────────────────────────────────
@@ -54,7 +53,6 @@ export class CreateNewsPage extends BasePage {
 
     // Validation & Feedback
     this.titleCounter = page.locator('span, div, p').filter({ hasText: /\d+\s*\/\s*170/ }).first();
-    this.contentCounter = page.locator('span, div, p').filter({ hasText: /63\s*206/ }).first();
     this.validationErrors = page.locator('.error-message, .mat-error, .validation-error, [class*="error"]');
 
     // Cancel Modal
@@ -86,6 +84,7 @@ export class CreateNewsPage extends BasePage {
     await this.step(`Fill title: "${title}"`, async () => {
       await this.titleInput.waitFor({ state: 'visible', timeout: TIMEOUTS.MEDIUM });
       await this.titleInput.fill(title);
+      await this.titleInput.dispatchEvent('input');
     });
   }
 
@@ -154,6 +153,7 @@ export class CreateNewsPage extends BasePage {
       await this.contentEditor.waitFor({ state: 'visible', timeout: TIMEOUTS.MEDIUM });
       await this.contentEditor.click();
       await this.contentEditor.fill(text);
+      await this.contentEditor.dispatchEvent('input');
     });
   }
 
@@ -170,6 +170,7 @@ export class CreateNewsPage extends BasePage {
     await this.step(`Fill source: "${url}"`, async () => {
       await this.sourceInput.waitFor({ state: 'visible', timeout: TIMEOUTS.MEDIUM });
       await this.sourceInput.fill(url);
+      await this.sourceInput.dispatchEvent('input');
     });
   }
 

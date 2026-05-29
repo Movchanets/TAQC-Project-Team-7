@@ -1,11 +1,8 @@
-import { test, expect } from '@playwright/test';
-import { HomePage } from '../pages/home.page';
+import { test, expect } from '../fixtures/index';
 
 test.describe('Home Page Tests', () => {
 
-  test('TC-01 Open GreenCity homepage', async ({ page }) => {
-    const homePage = new HomePage(page);
-
+  test('TC-01 Open GreenCity homepage', async ({ page, homePage }) => {
     await test.step('Navigate to GreenCity homepage', async () => {
       await homePage.navigate();
     });

@@ -3,7 +3,7 @@ import type { Locator, Page } from '@playwright/test';
 
 /**
  * HeaderComponent
- * Handles top navigation bar and authentication triggers.
+ * Scoped to the <header> root element. All child locators are relative to root.
  */
 export class HeaderComponent extends BaseComponent {
   readonly root: Locator;
@@ -13,27 +13,17 @@ export class HeaderComponent extends BaseComponent {
   readonly navigationLinks: Locator;
 
   constructor(page: Page) {
-    super(page);
+    super();
     this.root = page.locator('header, app-header');
-    this.logo = page.locator('.header_logo, a.logo, img[alt="logo"]');
-    this.loginButton = page.locator('.header_sign-in-link');
-    this.ecoNewsLink = page.locator('header a[href*="news"]');
-    this.navigationLinks = page.locator('header nav a, header .nav-link');
-  }
-
-  /** Wait for the header to be rendered and visible. */
-  async waitForReady(): Promise<void> {
-    await this.root.waitFor({ state: 'visible', timeout: 5000 });
-  }
-
-  /** Check if the header is currently visible. */
-  async isVisible(): Promise<boolean> {
-    return this.root.isVisible();
+    this.logo = this.root.locator('.header_logo, a.logo, img[alt="logo"]');
+    this.loginButton = this.root.locator('.header_sign-in-link');
+    this.ecoNewsLink = this.root.locator('a[href*="news"]');
+    this.navigationLinks = this.root.locator('nav a, .nav-link');
   }
 
   async clickLogin() {
     await this.loginButton.waitFor({ state: 'attached', timeout: 5000 });
-    await this.loginButton.evaluate((element: HTMLElement) => element.click());
+    await this.loginButton.evaluate((el: HTMLElement) => el.click());
   }
 
   async clickEcoNews() {
@@ -41,9 +31,6 @@ export class HeaderComponent extends BaseComponent {
     await this.ecoNewsLink.click();
   }
 
-  /**
-   * Navigate to a section by its link text (e.g., 'Eco News', 'About us').
-   */
   async navigateTo(linkText: string | RegExp) {
     const link = this.navigationLinks.filter({ hasText: linkText });
     await link.waitFor({ state: 'visible', timeout: 5000 });

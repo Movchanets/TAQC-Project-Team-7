@@ -1,11 +1,12 @@
 import { test, expect } from '../fixtures/index';
+import { TIMEOUTS } from '../utils/constants';
 
 test.describe('Profile Page E2E Tests', () => {
 
-  test.beforeEach(async ({ authenticatedPage, profilePage }) => {
-    await test.step('Navigate to profile page (authenticated)', async () => {
+  test.beforeEach(async ({ profilePage }) => {
+    await test.step('Navigate to profile page', async () => {
       await profilePage.navigate();
-      await profilePage.userName.first().waitFor({ state: 'visible', timeout: 8000 });
+      await profilePage.userName.first().waitFor({ state: 'visible', timeout: TIMEOUTS.LONG });
     });
   });
 

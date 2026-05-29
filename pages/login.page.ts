@@ -7,7 +7,6 @@ import { TIMEOUTS } from '../utils/constants';
  *
  * Page Object for the login modal/form in GreenCity.
  * Note: Login is a modal overlay, not a standalone page.
- * Use the HeaderComponent.clickLogin() to open it, then call login().
  */
 export class LoginPage extends BasePage {
   readonly emailInput: Locator;
@@ -31,13 +30,18 @@ export class LoginPage extends BasePage {
 
   /**
    * Perform login with the given credentials.
-   * Assumes the login modal is already open.
+   * Uses dispatchEvent to ensure Angular reactive forms detect value changes
+   * across all browsers (Firefox/WebKit don't trigger input events on fill()).
    */
   async login(email: string, password: string): Promise<void> {
     await this.step(`Login as ${email}`, async () => {
       await this.waitForVisible(this.emailInput, TIMEOUTS.MEDIUM);
       await this.emailInput.fill(email);
+      await this.emailInput.dispatchEvent('input');
+
       await this.passwordInput.fill(password);
+      await this.passwordInput.dispatchEvent('input');
+
       await this.submitButton.click();
     });
   }
