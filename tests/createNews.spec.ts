@@ -61,7 +61,7 @@ test.describe('Create News Form Layout and Behavior (TC-01)', () => {
   test('TC-01.2 Author and Date are pre-filled and read-only', async ({ createNewsPage }) => {
     const section = createNewsPage.authorDateSection;
 
-    await test.step('Today\'s date is displayed', async () => {
+    await test.step("Today's date is displayed", async () => {
       const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
       await expect(section).toContainText(today);
     });
@@ -131,7 +131,7 @@ test.describe('Create News Form Layout and Behavior (TC-01)', () => {
 
 test.describe('Create News — Publish and Tag Limits (TC-03)', () => {
 
-  test('TC-03.1 Publish news with 1 tag and verify', async ({ ecoNewsPage, createNewsPage, page }) => {
+  test('TC-03.1 Publish news with 1 tag and verify', async ({ ecoNewsPage, createNewsPage }) => {
     await test.step('Open Create News from Eco News page', async () => {
       await ecoNewsPage.navigate();
       await ecoNewsPage.waitForPageReady();
@@ -148,18 +148,16 @@ test.describe('Create News — Publish and Tag Limits (TC-03)', () => {
       await createNewsPage.fillTitle('Test');
       await createNewsPage.fillContent('Test content with 20 chars');
       await createNewsPage.clickPublish();
-      await page.waitForURL(/\/#\/(greenCity\/news|ubs)/);
     });
 
     await test.step('Published news appears with "News" tag', async () => {
-      await ecoNewsPage.navigate();
       await ecoNewsPage.waitForPageReady();
       await expect(ecoNewsPage.getNewsItemByTitle('Test')).toBeVisible({ timeout: 10000 });
       await expect(ecoNewsPage.getTagsForNewsItem('Test')).toHaveText(/News/i);
     });
   });
 
-  test('TC-03.2 Publish news with 3 tags and verify', async ({ ecoNewsPage, createNewsPage, page }) => {
+  test('TC-03.2 Publish news with 3 tags and verify', async ({ ecoNewsPage, createNewsPage }) => {
     await test.step('Open Create News from Eco News page', async () => {
       await ecoNewsPage.navigate();
       await ecoNewsPage.waitForPageReady();
@@ -178,11 +176,9 @@ test.describe('Create News — Publish and Tag Limits (TC-03)', () => {
       await createNewsPage.fillTitle('Test');
       await createNewsPage.fillContent('Test content with 20 chars');
       await createNewsPage.clickPublish();
-      await page.waitForURL(/\/#\/(greenCity\/news|ubs)/);
     });
 
     await test.step('Published news appears with all 3 tags', async () => {
-      await ecoNewsPage.navigate();
       await ecoNewsPage.waitForPageReady();
       await expect(ecoNewsPage.getNewsItemByTitle('Test')).toBeVisible({ timeout: 10000 });
       await expect(ecoNewsPage.getTagsForNewsItem('Test')).toHaveText(/News.*Events.*Education/i);

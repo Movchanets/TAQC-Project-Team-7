@@ -25,6 +25,10 @@ export class CreateNewsPage extends BasePage {
   readonly previewButton: Locator;
   readonly publishButton: Locator;
 
+  // ── Loading State ─────────────────────────────────────────────────────
+  readonly loadingSpinner: Locator;
+  readonly loadingMessage: Locator;
+
   // ── Validation & Feedback ────────────────────────────────────────────
   readonly titleCounter: Locator;
   readonly validationErrors: Locator;
@@ -50,6 +54,10 @@ export class CreateNewsPage extends BasePage {
     this.cancelButton = page.locator('div.submit-buttons button.tertiary-global-button');
     this.previewButton = page.locator('div.submit-buttons button.secondary-global-button');
     this.publishButton = page.locator('div.submit-buttons button.primary-global-button[type="submit"]');
+
+    // Loading State (appears after publish)
+    this.loadingSpinner = page.locator('.spinner, .loading-spinner, [class*="spinner"]');
+    this.loadingMessage = page.getByText(/please wait|loading to website|wait until page refreshes/i);
 
     // Validation & Feedback
     this.titleCounter = page.locator('span, div, p').filter({ hasText: /\d+\s*\/\s*170/ }).first();
@@ -179,11 +187,14 @@ export class CreateNewsPage extends BasePage {
 
   // ── Button Actions ─────────────────────────────────────────────────────
 
-  /** Click the Publish button. */
+  /** Click the Publish button and wait for the loading spinner to finish. */
   async clickPublish(): Promise<void> {
     await this.step('Click Publish', async () => {
       await this.publishButton.waitFor({ state: 'visible', timeout: TIMEOUTS.MEDIUM });
       await this.publishButton.click();
+      // Wait for the loading overlay to appear then disappear
+      await this.loadingMessage.waitFor({ state: 'visible', timeout: TIMEOUTS.MEDIUM }).catch(() => {});
+      await this.loadingMessage.waitFor({ state: 'hidden', timeout: TIMEOUTS.LONG }).catch(() => {});
     });
   }
 
