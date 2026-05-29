@@ -16,7 +16,7 @@ test.describe('Login Tests', () => {
       await loginPage.login('wrong-email@test.com', 'InvalidPassword123');
     });
 
-    await test.step('Verify error message is displayed', async () => {
+    await test.step('Error message is displayed', async () => {
       await expect(loginPage.errorMessage).toBeVisible();
     });
   });
