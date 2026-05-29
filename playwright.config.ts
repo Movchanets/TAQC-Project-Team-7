@@ -6,7 +6,6 @@ const domainBaseUrl = `${baseUri.protocol}//${baseUri.host}/`;
 
 export default defineConfig({
   testDir: "./tests",
-  fullyParallel: true,
   timeout: ENV.TIMEOUT,
   retries: ENV.RETRIES,
   reporter: [["list"], ["html", { open: "never" }], ["allure-playwright"]],
