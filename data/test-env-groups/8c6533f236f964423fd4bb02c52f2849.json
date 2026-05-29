@@ -1,1 +1,1 @@
-{"id":"8c6533f236f964423fd4bb02c52f2849","fullName":"home.spec.ts:5:7","name":"GreenCity homepage loads with logo and correct title","status":"broken","testResultsByEnv":{"default":"0dc19b8080d6c619e0c8edaf4c0456c3"}}
+{"id":"8c6533f236f964423fd4bb02c52f2849","fullName":"home.spec.ts:5:7","name":"GreenCity homepage loads with logo and correct title","status":"passed","testResultsByEnv":{"default":"690ce74744dea0c7c35784569a59e5ca"}}

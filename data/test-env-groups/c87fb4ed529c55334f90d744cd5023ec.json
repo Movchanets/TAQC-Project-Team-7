@@ -1,1 +1,1 @@
-{"id":"c87fb4ed529c55334f90d744cd5023ec","fullName":"createNews.spec.ts:162:7","name":"TC-03.2 Publish news with 3 tags and verify","status":"failed","testResultsByEnv":{"default":"3e7b51815ab8ecfc1fb00df55562b9a1"}}
+{"id":"c87fb4ed529c55334f90d744cd5023ec","fullName":"createNews.spec.ts:160:7","name":"TC-03.2 Publish news with 3 tags and verify","status":"failed","testResultsByEnv":{"default":"e95e78be422793d306d13fae1b6bc91d"}}
