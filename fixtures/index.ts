@@ -1,5 +1,6 @@
 import { test as base, expect } from '@playwright/test';
 import { HomePage } from '../pages/home.page';
+import { LoginPage } from '../pages/login.page';
 import { EcoNewsPage } from '../pages/ecoNews.page';
 import { ProfilePage } from '../pages/profile.page';
 import { CreateNewsPage } from '../pages/createNews.page';
@@ -9,6 +10,7 @@ import { NewsDetailsPage } from '../pages/newsDetails.page';
 // ── Fixture Type Definitions ────────────────────────────────────────────
 export type AppFixtures = {
   homePage: HomePage;
+  loginPage: LoginPage;
   ecoNewsPage: EcoNewsPage;
   profilePage: ProfilePage;
   createNewsPage: CreateNewsPage;
@@ -21,6 +23,10 @@ export const test = base.extend<AppFixtures>({
 
   homePage: async ({ page }, use) => {
     await use(new HomePage(page));
+  },
+
+  loginPage: async ({ page }, use) => {
+    await use(new LoginPage(page));
   },
 
   ecoNewsPage: async ({ page }, use) => {

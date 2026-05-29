@@ -17,7 +17,7 @@ export class EcoNewsPage extends BasePage {
     super(page);
 
     this.createNewsButton = page.locator('#create-button, button:has-text("Create news")');
-    this.newsItems = page.locator('app-eco-news-list-item, .gallery-view-table-list');
+    this.newsItems = page.locator('app-news-list-gallery-view, app-eco-news-list-item');
     this.newsItemLinks = page.locator('app-eco-news-list-item a, .gallery-view-table-list a');
   }
 
@@ -31,7 +31,6 @@ export class EcoNewsPage extends BasePage {
 
   /** Wait for the news list to load. */
   async waitForPageReady(): Promise<void> {
-    await this.page.waitForLoadState('networkidle');
     // Wait for at least one news item or the create button
     await Promise.race([
       this.newsItems.first().waitFor({ state: 'visible', timeout: TIMEOUTS.LONG }),
@@ -59,5 +58,16 @@ export class EcoNewsPage extends BasePage {
       await this.waitForVisible(this.newsItemLinks.first(), TIMEOUTS.MEDIUM);
       await this.newsItemLinks.first().click();
     });
+  }
+
+  /** Find a news item by its title and return its locator. Assumes titles are unique on the page. */
+  getNewsItemByTitle(title: string): Locator {
+    return this.newsItems.filter({ hasText: title }).first();
+  }
+  
+ // ** Get the tags associated with a news item by its title. */
+  getTagsForNewsItem(title: string): Locator {
+    const newsCard = this.getNewsItemByTitle(title); 
+    return newsCard.locator('.filter-tag');
   }
 }

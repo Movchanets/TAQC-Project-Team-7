@@ -17,6 +17,7 @@ export default defineConfig({
     trace: "retain-on-failure",
     // GreenCity may have self-signed certs in staging environments
     ignoreHTTPSErrors: true,
+    viewport: { width: 1920, height: 1080 },
   },
   projects: [
     // ── Setup: runs once, saves auth state ──────────────────────────────

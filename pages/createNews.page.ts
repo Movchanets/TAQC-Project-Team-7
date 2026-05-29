@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { Locator, Page, expect } from '@playwright/test';
 import { BasePage } from './base.page';
 import { ENV } from '../utils/env';
 import { FORM_LIMITS, TIMEOUTS, ROUTES } from '../utils/constants';
@@ -73,8 +73,8 @@ export class CreateNewsPage extends BasePage {
 
   /** Wait for the form to be fully loaded (title input visible). */
   async waitForFormReady(): Promise<void> {
-    await this.waitForVisible(this.titleInput, TIMEOUTS.LONG);
-    await this.page.waitForTimeout(TIMEOUTS.SPA_HYDRATION);
+    await this.titleInput.waitFor({ state: 'visible', timeout: TIMEOUTS.LONG });
+    await expect(this.titleInput).toBeEditable();
   }
 
   // ── Field Actions ──────────────────────────────────────────────────────

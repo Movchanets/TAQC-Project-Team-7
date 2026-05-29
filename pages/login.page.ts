@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { Locator, Page, expect } from '@playwright/test';
 import { BasePage } from './base.page';
 import { TIMEOUTS } from '../utils/constants';
 
@@ -17,15 +17,15 @@ export class LoginPage extends BasePage {
   constructor(page: Page) {
     super(page);
 
-    this.emailInput = page.getByRole('textbox', { name: 'Email' });
+    this.emailInput = page.locator('#email');
     this.passwordInput = page.locator('input[id="password"]');
-    this.submitButton = page.locator('.is-filled, button[type="submit"]').getByText('Sign in', { exact: true });
+    this.submitButton = page.getByRole('button', { name: /sign in|увійти/i }).first();
     this.errorMessage = page.getByText(/bad email or password|невірний email або пароль/i);
   }
 
   /** Navigate — login is a modal, so this waits for the modal to be visible. */
   async navigate(): Promise<void> {
-    await this.waitForVisible(this.emailInput, TIMEOUTS.LONG);
+    await this.waitForVisible(this.emailInput, 15000);
   }
 
   /**
@@ -45,6 +45,7 @@ export class LoginPage extends BasePage {
       await this.submitButton.click();
     });
   }
+
 
   /** Check if the error message is displayed after a failed login attempt. */
   async hasError(): Promise<boolean> {
