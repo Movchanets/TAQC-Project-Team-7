@@ -1,0 +1,444 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: createNews.spec.ts >> Create News Form Layout and Behavior (TC-01) >> TC-01.1 Verify all form fields are present in correct order
+- Location: tests/createNews.spec.ts:17:7
+
+# Error details
+
+```
+Error: expect(received).toBeLessThanOrEqual(expected)
+
+Expected: <= 281.1875
+Received:    472.78125
+```
+
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e4]:
+      - link "skip to the main content" [ref=e6] [cursor=pointer]:
+        - /url: .main-content
+      - banner "Welcome to header" [ref=e7]:
+        - generic [ref=e9]:
+          - link "Image green city logo" [ref=e10] [cursor=pointer]:
+            - /url: "#/greenCity"
+            - link "Image green city logo" [ref=e11]
+          - generic [ref=e12]:
+            - navigation [ref=e13]:
+              - tablist [ref=e14]:
+                - listitem [ref=e15]:
+                  - link "Eco news" [ref=e16] [cursor=pointer]:
+                    - /url: "#/greenCity/news"
+                - listitem [ref=e17]:
+                  - link "Events" [ref=e18] [cursor=pointer]:
+                    - /url: "#/greenCity/events"
+                - listitem [ref=e19]:
+                  - link "Places" [ref=e20] [cursor=pointer]:
+                    - /url: "#/greenCity/places"
+                - listitem [ref=e21]:
+                  - link "About us" [ref=e22] [cursor=pointer]:
+                    - /url: "#/greenCity/about"
+                - listitem [ref=e23]:
+                  - link "My space" [ref=e24] [cursor=pointer]:
+                    - /url: "#/greenCity/profile"
+                - listitem [ref=e25]:
+                  - link "UBS courier" [ref=e26] [cursor=pointer]:
+                    - /url: "#/ubs"
+            - menu [ref=e28]:
+              - listitem "site bookmark" [ref=e29] [cursor=pointer]:
+                - img [ref=e30]
+              - listitem "site notification" [ref=e31] [cursor=pointer]:
+                - img [ref=e32]
+              - search "site search" [ref=e33] [cursor=pointer]:
+                - img [ref=e34]
+              - menu "language switcher" [ref=e35]:
+                - option "english" [ref=e36] [cursor=pointer]:
+                  - generic [ref=e37]: En
+                  - img [ref=e38]
+              - menu "profile options collapsed" [ref=e39]:
+                - listitem [ref=e40] [cursor=pointer]: Viacheslav
+      - generic [ref=e41]:
+        - generic "Tab To Main"
+        - generic [ref=e42]:
+          - main [ref=e46]:
+            - generic [ref=e47]:
+              - generic [ref=e48]:
+                - heading "Create news" [level=2] [ref=e49]
+                - paragraph [ref=e51]: Please provide as many details as you can - place and time of the event, the goal of gathering, etc. You can come back and update news anytime after publishing.
+              - generic [ref=e53]:
+                - generic [ref=e54]:
+                  - generic [ref=e55]:
+                    - generic [ref=e56]:
+                      - heading "Title" [level=3] [ref=e57]
+                      - generic [ref=e58]: 0/170
+                    - textbox [ref=e60]:
+                      - /placeholder: e.g. Coffee takeaway with 20% discount
+                  - generic [ref=e61]:
+                    - heading "Pick tags for news" [level=3] [ref=e62]
+                    - paragraph [ref=e63]: Only 3 tags can be added
+                    - generic [ref=e65]:
+                      - button "News" [ref=e66] [cursor=pointer]:
+                        - generic [ref=e68]: News
+                      - button "Events" [ref=e69] [cursor=pointer]:
+                        - generic [ref=e71]: Events
+                      - button "Education" [ref=e72] [cursor=pointer]:
+                        - generic [ref=e74]: Education
+                      - button "Initiatives" [ref=e75] [cursor=pointer]:
+                        - generic [ref=e77]: Initiatives
+                      - button "Ads" [ref=e78] [cursor=pointer]:
+                        - generic [ref=e80]: Ads
+                  - generic [ref=e81]:
+                    - generic [ref=e82]:
+                      - heading "Source (optional)" [level=3] [ref=e83]
+                      - generic [ref=e84]: Please add the link of original article/news/post. Link must start with http(s)://
+                    - textbox [ref=e86]:
+                      - /placeholder: Link to external source
+                  - generic [ref=e87]:
+                    - heading "Picture (optional)" [level=3] [ref=e88]
+                    - generic [ref=e89]:
+                      - generic [ref=e92]:
+                        - text: Drop your image here or
+                        - generic [ref=e93]: browse
+                        - button "browse" [ref=e94]
+                      - generic [ref=e95]:
+                        - generic "Crop photo" [ref=e99]
+                        - generic [ref=e112]:
+                          - button "Cancel" [ref=e113] [cursor=pointer]
+                          - button "Submit" [ref=e114] [cursor=pointer]
+                      - paragraph [ref=e115]: Upload only PNG or JPG. File size must be less than 10MB
+                - generic [ref=e116]:
+                  - generic [ref=e117]:
+                    - heading "Content" [level=3] [ref=e118]
+                    - paragraph [ref=e119]: Must be minimum 20 and maximum 63 206 symbols
+                  - generic [ref=e120]:
+                    - generic [ref=e121]:
+                      - generic [ref=e122]:
+                        - button [ref=e123] [cursor=pointer]:
+                          - img [ref=e124]
+                        - button [ref=e127] [cursor=pointer]:
+                          - img [ref=e128]
+                        - button [ref=e130] [cursor=pointer]:
+                          - img [ref=e131]
+                        - button [ref=e134] [cursor=pointer]:
+                          - img [ref=e135]
+                      - generic [ref=e139]:
+                        - button [ref=e140] [cursor=pointer]:
+                          - img [ref=e141]
+                        - button [ref=e146] [cursor=pointer]:
+                          - img [ref=e147]
+                      - generic [ref=e151]:
+                        - button [ref=e152] [cursor=pointer]:
+                          - img [ref=e153]
+                        - button [ref=e155] [cursor=pointer]:
+                          - img [ref=e156]
+                      - generic [ref=e158]:
+                        - button [ref=e159] [cursor=pointer]:
+                          - img [ref=e160]
+                        - button [ref=e164] [cursor=pointer]:
+                          - img [ref=e165]
+                      - generic [ref=e166]:
+                        - button [ref=e167] [cursor=pointer]:
+                          - img [ref=e168]
+                        - button [ref=e171] [cursor=pointer]:
+                          - img [ref=e172]
+                      - generic [ref=e175]:
+                        - button [ref=e176] [cursor=pointer]:
+                          - img [ref=e177]
+                        - button [ref=e179] [cursor=pointer]:
+                          - img [ref=e180]
+                      - button [ref=e183] [cursor=pointer]:
+                        - img [ref=e184]
+                      - generic [ref=e190]:
+                        - button "Normal" [ref=e191] [cursor=pointer]:
+                          - text: Normal
+                          - img [ref=e192]
+                        - text: Small Normal Large Huge
+                      - generic [ref=e196]:
+                        - button "Normal" [ref=e197] [cursor=pointer]:
+                          - text: Normal
+                          - img [ref=e198]
+                        - text: Heading 1 Heading 2 Heading 3 Heading 4 Heading 5 Heading 6 Normal
+                      - generic [ref=e201]:
+                        - button [ref=e203] [cursor=pointer]:
+                          - img [ref=e204]
+                        - button [ref=e207] [cursor=pointer]:
+                          - img [ref=e208]
+                      - generic [ref=e258]:
+                        - button "Sans Serif" [ref=e259] [cursor=pointer]:
+                          - text: Sans Serif
+                          - img [ref=e260]
+                        - text: Sans Serif Serif Monospace
+                      - button [ref=e265] [cursor=pointer]:
+                        - img [ref=e266]
+                      - button [ref=e268] [cursor=pointer]:
+                        - img [ref=e269]
+                      - generic [ref=e274]:
+                        - button [ref=e275] [cursor=pointer]:
+                          - img [ref=e276]
+                        - button [ref=e280] [cursor=pointer]:
+                          - img [ref=e281]
+                        - button [ref=e285] [cursor=pointer]:
+                          - img [ref=e286]
+                      - button [ref=e300] [cursor=pointer]:
+                        - img [ref=e301]
+                    - generic [ref=e306]:
+                      - generic [ref=e307]:
+                        - text: e.g. Short description of news, agenda for event
+                        - paragraph [ref=e308]
+                      - text: "Visit URL: EditRemove"
+                  - paragraph
+                - generic [ref=e309]:
+                  - paragraph [ref=e310]: "Date: May 29, 2026"
+                  - paragraph [ref=e311]: "Author: Viacheslav"
+                - generic [ref=e312]:
+                  - button "Cancel" [ref=e313] [cursor=pointer]
+                  - button "Preview" [ref=e314] [cursor=pointer]
+                  - button "Publish" [disabled] [ref=e315]
+          - contentinfo [ref=e317]:
+            - generic [ref=e318]:
+              - generic [ref=e319]:
+                - link "GreenCity home" [ref=e321] [cursor=pointer]:
+                  - /url: "#/greenCity"
+                  - img "GreenCity home" [ref=e322]
+                - navigation [ref=e323]:
+                  - menu [ref=e324]:
+                    - listitem [ref=e325]:
+                      - link "Eco news" [ref=e326] [cursor=pointer]:
+                        - /url: "#/greenCity/news"
+                    - listitem [ref=e327]:
+                      - link "Events" [ref=e328] [cursor=pointer]:
+                        - /url: "#/greenCity/events"
+                    - listitem [ref=e329]:
+                      - link "Places" [ref=e330] [cursor=pointer]:
+                        - /url: "#/greenCity/places"
+                    - listitem [ref=e331]:
+                      - link "About Us" [ref=e332] [cursor=pointer]:
+                        - /url: "#/greenCity/about"
+                    - listitem [ref=e333]:
+                      - link "My Space" [ref=e334] [cursor=pointer]:
+                        - /url: "#/greenCity/profile/2261"
+                    - listitem [ref=e335]:
+                      - link "UBS Courier" [ref=e336] [cursor=pointer]:
+                        - /url: "#/ubs"
+                  - menu [ref=e337]:
+                    - listitem [ref=e338]:
+                      - paragraph [ref=e339]: Follow us
+                    - listitem [ref=e340]:
+                      - link "Twitter link" [ref=e341] [cursor=pointer]:
+                        - /url: "#"
+                        - img "Twitter link" [ref=e342]
+                      - link "LinkedIn link" [ref=e343] [cursor=pointer]:
+                        - /url: "#"
+                        - img "LinkedIn link" [ref=e344]
+                      - link "Facebook link" [ref=e345] [cursor=pointer]:
+                        - /url: "#"
+                        - img "Facebook link" [ref=e346]
+                      - link "Instagram link" [ref=e347] [cursor=pointer]:
+                        - /url: "#"
+                        - img "Instagram link" [ref=e348]
+                      - link "YouTube link" [ref=e349] [cursor=pointer]:
+                        - /url: "#"
+                        - img "YouTube link" [ref=e350]
+              - generic [ref=e351]: © Copyright 2026. Green City.
+    - button "chat" [ref=e352] [cursor=pointer]:
+      - img "chat" [ref=e353]
+  - generic [ref=e354]: Welcome to the search window
+```
+
+# Test source
+
+```ts
+  1   | import { test, expect } from "../fixtures/index";
+  2   | import { NEWS_TAGS } from "../utils/constants";
+  3   | 
+  4   | test.describe("Create News Form Layout and Behavior (TC-01)", () => {
+  5   |   test.beforeEach(async ({ ecoNewsPage, createNewsPage }) => {
+  6   |     await test.step("Step 1: Navigate to GreenCity News", async () => {
+  7   |       await ecoNewsPage.navigate();
+  8   |       await ecoNewsPage.waitForPageReady();
+  9   |     });
+  10  |     // Step 2: Login — handled by auth setup (storageState)
+  11  |     await test.step('Step 3: Click "Create News"', async () => {
+  12  |       await ecoNewsPage.clickCreateNews();
+  13  |       await createNewsPage.waitForFormReady();
+  14  |     });
+  15  |   });
+  16  |   //Should fail because real page layout may not match expected order
+  17  |   test("TC-01.1 Verify all form fields are present in correct order", async ({
+  18  |     createNewsPage,
+  19  |   }) => {
+  20  |     const page = createNewsPage;
+  21  | 
+  22  |     await test.step("Step 4: Title field is visible (auto-resizing textarea)", async () => {
+  23  |       await expect(page.titleInput).toBeVisible();
+  24  |       const tag = await page.titleInput.evaluate((el) =>
+  25  |         el.tagName.toLowerCase(),
+  26  |       );
+  27  |       expect(tag).toBe("textarea");
+  28  |     });
+  29  | 
+  30  |     await test.step("Step 4: Tag buttons — 5 tags: News, Events, Education, Initiatives, Ads", async () => {
+  31  |       await expect(page.tagButtons).toHaveCount(5);
+  32  |       const expectedTags = [
+  33  |         NEWS_TAGS.NEWS,
+  34  |         NEWS_TAGS.EVENTS,
+  35  |         NEWS_TAGS.EDUCATION,
+  36  |         NEWS_TAGS.INITIATIVES,
+  37  |         NEWS_TAGS.ADS,
+  38  |       ];
+  39  |       for (const tagPattern of expectedTags) {
+  40  |         await expect(page.getTagButton(tagPattern)).toBeVisible();
+  41  |       }
+  42  |     });
+  43  | 
+  44  |     await test.step("Step 4: Add Image — dropzone and file input are present", async () => {
+  45  |       await expect(page.imageDropzone).toBeVisible();
+  46  |       await expect(page.fileInput).toBeAttached();
+  47  |     });
+  48  | 
+  49  |     await test.step("Step 4: Main Text editor is visible", async () => {
+  50  |       await expect(page.contentEditor).toBeVisible();
+  51  |     });
+  52  | 
+  53  |     await test.step("Step 4: Author and Date section is visible", async () => {
+  54  |       await expect(page.authorDateSection).toBeVisible();
+  55  |     });
+  56  | 
+  57  |     await test.step("Step 4: Source field is visible", async () => {
+  58  |       await expect(page.sourceInput).toBeVisible();
+  59  |     });
+  60  | 
+  61  |     await test.step("Step 5: Buttons Cancel, Preview, Publish are visible", async () => {
+  62  |       await expect(page.cancelButton).toBeVisible();
+  63  |       await expect(page.previewButton).toBeVisible();
+  64  |       await expect(page.publishButton).toBeVisible();
+  65  |     });
+  66  | 
+  67  |     await test.step("Fields appear top-to-bottom: title → tags → image → content → author/date → source → buttons", async () => {
+  68  |       const boxes = {
+  69  |         title: await page.titleInput.boundingBox(),
+  70  |         tags: await page.tagButtons.first().boundingBox(),
+  71  |         image: await page.imageDropzone.boundingBox(),
+  72  |         content: await page.contentEditor.boundingBox(),
+  73  |         author: await page.authorDateSection.boundingBox(),
+  74  |         source: await page.sourceInput.boundingBox(),
+  75  |         cancel: await page.cancelButton.boundingBox(),
+  76  |         preview: await page.previewButton.boundingBox(),
+  77  |         publish: await page.publishButton.boundingBox(),
+  78  |       };
+  79  | 
+  80  |       Object.values(boxes).forEach((box) => expect(box).not.toBeNull());
+  81  | 
+  82  |       // Vertical order per TC-01.md: Title → Tags → Add Image → Main Text → Author → Date → Source
+  83  |       expect(boxes.title!.y).toBeLessThanOrEqual(boxes.tags!.y);
+> 84  |       expect(boxes.tags!.y).toBeLessThanOrEqual(boxes.image!.y);
+      |                             ^ Error: expect(received).toBeLessThanOrEqual(expected)
+  85  |       expect(boxes.image!.y).toBeLessThanOrEqual(boxes.content!.y);
+  86  |       expect(boxes.content!.y).toBeLessThanOrEqual(boxes.author!.y);
+  87  |       expect(boxes.author!.y).toBeLessThanOrEqual(boxes.source!.y);
+  88  |       expect(boxes.source!.y).toBeLessThanOrEqual(boxes.cancel!.y);
+  89  | 
+  90  |       // Horizontal order of action buttons
+  91  |       expect(boxes.cancel!.x).toBeLessThan(boxes.preview!.x);
+  92  |       expect(boxes.preview!.x).toBeLessThan(boxes.publish!.x);
+  93  |     });
+  94  |   });
+  95  | 
+  96  |   test("TC-01.2 Author and Date are pre-filled and read-only", async ({
+  97  |     createNewsPage,
+  98  |   }) => {
+  99  |     const section = createNewsPage.authorDateSection;
+  100 | 
+  101 |     await test.step("Date is pre-filled with today's date", async () => {
+  102 |       const today = new Date().toLocaleDateString("en-US", {
+  103 |         month: "short",
+  104 |         day: "numeric",
+  105 |         year: "numeric",
+  106 |       });
+  107 |       await expect(section).toContainText(today);
+  108 |     });
+  109 | 
+  110 |     await test.step("Author is pre-filled with user name", async () => {
+  111 |       const authorLabel = section.locator("p").filter({ hasText: /Author/i });
+  112 |       await expect(authorLabel).toBeVisible();
+  113 |       const text = await authorLabel.innerText();
+  114 |       expect(text.replace(/Author:/i, "").trim()).not.toBe("");
+  115 |     });
+  116 | 
+  117 |     await test.step("Author and Date are non-editable (no inputs)", async () => {
+  118 |       await expect(section.locator("input, textarea")).toHaveCount(0);
+  119 |     });
+  120 |   });
+  121 | 
+  122 |   test("TC-01.3 Tags can be selected and deselected", async ({
+  123 |     createNewsPage,
+  124 |   }) => {
+  125 |     const tag = createNewsPage.getTagButton(NEWS_TAGS.NEWS).locator("a");
+  126 | 
+  127 |     await test.step("All 5 tag buttons are visible and enabled", async () => {
+  128 |       await expect(createNewsPage.tagButtons).toHaveCount(5);
+  129 |       for (const btn of await createNewsPage.tagButtons.all()) {
+  130 |         await expect(btn).toBeVisible();
+  131 |         await expect(btn).toBeEnabled();
+  132 |       }
+  133 |     });
+  134 | 
+  135 |     await test.step("Selected tag changes appearance (global-tag-clicked class)", async () => {
+  136 |       await expect(tag).not.toHaveClass(/global-tag-clicked/);
+  137 |       await tag.click();
+  138 |       await expect(tag).toHaveClass(/global-tag-clicked/);
+  139 |       await tag.click();
+  140 |       await expect(tag).not.toHaveClass(/global-tag-clicked/);
+  141 |     });
+  142 |   });
+  143 | 
+  144 |   test("TC-01.4 Character counters and placeholders", async ({
+  145 |     createNewsPage,
+  146 |   }) => {
+  147 |     const page = createNewsPage.page;
+  148 | 
+  149 |     await test.step("Title counter starts at 0/170", async () => {
+  150 |       await expect(
+  151 |         page
+  152 |           .locator("span, div, p")
+  153 |           .filter({ hasText: /0\s*\/\s*170/ })
+  154 |           .first(),
+  155 |       ).toBeVisible();
+  156 |     });
+  157 | 
+  158 |     await test.step("Title counter updates after typing", async () => {
+  159 |       const title = "Automated Test News Title";
+  160 |       await createNewsPage.fillTitle(title);
+  161 |       const counter = page
+  162 |         .locator("span, div, p")
+  163 |         .filter({ hasText: new RegExp(`${title.length}\\s*\\/\\s*170`) })
+  164 |         .first();
+  165 |       await expect(counter).toBeVisible();
+  166 |     });
+  167 | 
+  168 |     await test.step("Main Text counter shows 63 206", async () => {
+  169 |       await expect(
+  170 |         page
+  171 |           .locator("span, div, p")
+  172 |           .filter({ hasText: /63\s*206/ })
+  173 |           .first(),
+  174 |       ).toBeVisible();
+  175 |     });
+  176 | 
+  177 |     await test.step("Source field has placeholder text", async () => {
+  178 |       await expect(createNewsPage.sourceInput).toHaveAttribute(
+  179 |         "placeholder",
+  180 |         /external source|link/i,
+  181 |       );
+  182 |     });
+  183 |   });
+  184 | });
+```
