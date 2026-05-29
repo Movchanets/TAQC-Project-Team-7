@@ -12,7 +12,7 @@ permissions:
   checks: write # Необхідно для Allure Quality Gate перевірок
 
 env:
-  BASE_URL: https://www.greencity.cx.ua/#/greenCity
+  BASE_URL: https://www.greencity.cx.ua
   WORKERS: 2
   RETRIES: 1
 

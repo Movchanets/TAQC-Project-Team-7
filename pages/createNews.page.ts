@@ -78,8 +78,7 @@ export class CreateNewsPage extends BasePage {
   /** Navigate directly to the Create News form. */
   async navigate(): Promise<void> {
     const base = new URL(ENV.BASE_URL);
-    const targetRoute = `${base.hash || ROUTES.HOME}/news/create-news`;
-    await this.page.goto(targetRoute);
+    await this.page.goto(`${base.origin}${base.pathname}${ROUTES.CREATE_NEWS}`);
     await this.waitForPageReady();
   }
 

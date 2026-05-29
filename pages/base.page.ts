@@ -27,8 +27,7 @@ export abstract class BasePage {
    */
   async navigate(): Promise<void> {
     const base = new URL(ENV.BASE_URL);
-    const targetRoute = base.hash || this.url;
-    await this.page.goto(targetRoute);
+    await this.page.goto(`${base.origin}${base.pathname}${this.url}`);
   }
 
   /**
