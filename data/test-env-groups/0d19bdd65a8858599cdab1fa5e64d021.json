@@ -1,1 +1,1 @@
-{"id":"0d19bdd65a8858599cdab1fa5e64d021","fullName":"cancelNews.spec.ts:38:7","name":"TC-07.2 \"Continue editing\" dismisses modal and keeps form open with existing data","status":"failed","testResultsByEnv":{"default":"284537e4497f9c250f6e96c21cacf77b"}}
+{"id":"0d19bdd65a8858599cdab1fa5e64d021","fullName":"cancelNews.spec.ts:38:7","name":"TC-07.2 \"Continue editing\" dismisses modal and keeps form open with existing data","status":"passed","testResultsByEnv":{"default":"10570c84a3b2881ac34c9d85dd76e750"}}
