@@ -1,1 +1,1 @@
-{"id":"6f3e79c0f84ba0078ef63462ac66756e","fullName":"cancelNews.spec.ts:15:7","name":"TC-07.1 Cancel → \"Yes, cancel\" closes form and redirects to news page","status":"passed","testResultsByEnv":{"default":"647e270f2cd5e2ba6b8771500e9d2cca"}}
+{"id":"6f3e79c0f84ba0078ef63462ac66756e","fullName":"cancelNews.spec.ts:15:7","name":"TC-07.1 Cancel → \"Yes, cancel\" closes form and redirects to news page","status":"passed","testResultsByEnv":{"default":"0670966dda0437a182e3893f2a39ddfe"}}
