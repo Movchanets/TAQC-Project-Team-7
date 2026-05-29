@@ -45,6 +45,38 @@ test.describe('Create News Form Layout and Behavior (TC-01)', () => {
       await expect(createNewsPage.previewButton).toBeVisible();
       await expect(createNewsPage.publishButton).toBeVisible();
     });
+
+    await test.step('Verify strict top-to-bottom layout order', async () => {
+      const titleBox = await createNewsPage.titleInput.boundingBox();
+      const tagBox = await createNewsPage.tagButtons.first().boundingBox();
+      const imageBox = await createNewsPage.imageDropzone.boundingBox();
+      const contentBox = await createNewsPage.contentEditor.boundingBox();
+      const authorBox = await createNewsPage.authorDateSection.boundingBox();
+      const sourceBox = await createNewsPage.sourceInput.boundingBox();
+      const cancelBox = await createNewsPage.cancelButton.boundingBox();
+      const previewBox = await createNewsPage.previewButton.boundingBox();
+      const publishBox = await createNewsPage.publishButton.boundingBox();
+
+      expect(titleBox).not.toBeNull();
+      expect(tagBox).not.toBeNull();
+      expect(imageBox).not.toBeNull();
+      expect(contentBox).not.toBeNull();
+      expect(authorBox).not.toBeNull();
+      expect(sourceBox).not.toBeNull();
+      expect(cancelBox).not.toBeNull();
+      expect(previewBox).not.toBeNull();
+      expect(publishBox).not.toBeNull();
+
+      expect(titleBox!.y).toBeLessThan(tagBox!.y);
+      expect(tagBox!.y).toBeLessThan(imageBox!.y);
+      expect(imageBox!.y).toBeLessThan(contentBox!.y);
+      expect(contentBox!.y).toBeLessThan(authorBox!.y);
+      expect(authorBox!.y).toBeLessThan(sourceBox!.y);
+      expect(sourceBox!.y).toBeLessThan(cancelBox!.y);
+
+      expect(cancelBox!.x).toBeLessThan(previewBox!.x);
+      expect(previewBox!.x).toBeLessThan(publishBox!.x);
+    });
   });
 
   test('TC-01.2 Verify pre-filled and non-editable Author and Date fields', async ({ createNewsPage }) => {
@@ -134,7 +166,7 @@ test.describe('Create News Form Layout and Behavior (TC-01)', () => {
 
 
 test.describe('Create News Form Layout and Behavior (TC-03)', () => {
-    test.beforeEach(async ({ authenticatedPage, createNewsPage }) => {
+    test.beforeEach(async ({ createNewsPage }) => {
         await test.step('Navigate to Create News form', async () => {
             await createNewsPage.navigate();
             await createNewsPage.waitForFormReady();
