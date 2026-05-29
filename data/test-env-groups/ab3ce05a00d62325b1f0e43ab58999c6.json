@@ -1,1 +1,1 @@
-{"id":"ab3ce05a00d62325b1f0e43ab58999c6","fullName":"profile.spec.ts:44:7","name":"Verify Dashboard tabs navigation and My News actions","status":"passed","testResultsByEnv":{"default":"49dd6a7656066844dbf717f08424c905"}}
+{"id":"ab3ce05a00d62325b1f0e43ab58999c6","fullName":"profile.spec.ts:44:7","name":"Verify Dashboard tabs navigation and My News actions","status":"failed","testResultsByEnv":{"default":"9ca638476ebe08d23a5f72a134090cb0"}}
