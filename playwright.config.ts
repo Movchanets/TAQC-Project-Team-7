@@ -9,6 +9,7 @@ export default defineConfig({
   fullyParallel: true,
   timeout: ENV.TIMEOUT,
   retries: ENV.RETRIES,
+  workers: ENV.WORKERS,
   reporter: [["list"], ["html", { open: "never" }], ["allure-playwright"]],
   use: {
     baseURL: domainBaseUrl,
