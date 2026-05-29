@@ -169,14 +169,17 @@ test.describe('Create News Form Layout and Behavior (TC-01)', () => {
 
 
 test.describe('Create News Form Layout and Behavior (TC-03)', () => {
+    let newsTitle: string;
+
     test.beforeEach(async ({ createNewsPage }) => {
+        newsTitle = `E2E-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
         await test.step('Navigate to Create News form', async () => {
             await createNewsPage.navigate();
             await createNewsPage.waitForFormReady();
         });
     });
 
-    test('TC-03.1 Allow selecting up to 3 tags and block the 4th', async ({ createNewsPage, page }) => {
+    test('TC-03.1 Allow selecting up to 3 tags and block the 4th', async ({ createNewsPage }) => {
         await test.step('Select 3 valid tags', async () => {
             await createNewsPage.selectTag('Ads');
             await createNewsPage.selectTag('Education');
@@ -194,7 +197,6 @@ test.describe('Create News Form Layout and Behavior (TC-03)', () => {
     });
 
     test('TC-03.2 Should successfully publish news with 1 tag', async ({ createNewsPage, ecoNewsPage, page }) => {
-        const newsTitle = 'Test';
         const newsContent = 'Test content with 20 chars';
 
         await test.step('Fill form and select 1 tag', async () => {
@@ -203,20 +205,23 @@ test.describe('Create News Form Layout and Behavior (TC-03)', () => {
 
         await test.step('Publish and verify tag on details page', async () => {
             await createNewsPage.clickPublish();
-            await page.waitForURL(/.*ubs/)
+            await page.waitForURL('**/news');
             await ecoNewsPage.navigate();
 
             const newsCard = ecoNewsPage.getNewsItemByTitle(newsTitle);
-
             await expect(newsCard).toBeVisible();
 
             const newsTags = ecoNewsPage.getTagsForNewsItem(newsTitle);
             await expect(newsTags).toContainText('News');
         });
+
+        await test.step('Cleanup: delete published news', async () => {
+            await ecoNewsPage.navigate();
+            await ecoNewsPage.deleteNewsByTitle(newsTitle);
+        });
     });
 
     test('TC-03.3 Should successfully publish news with 3 tags', async ({ createNewsPage, ecoNewsPage, page }) => {
-        const newsTitle = 'Test';
         const newsContent = 'Test content with 20 chars';
 
         await test.step('Fill form and select 3 tags', async () => {
@@ -227,11 +232,10 @@ test.describe('Create News Form Layout and Behavior (TC-03)', () => {
 
         await test.step('Publish and verify tags on details page', async () => {
             await createNewsPage.clickPublish();
-            await page.waitForURL(/.*ubs/)
+            await page.waitForURL('**/news');
             await ecoNewsPage.navigate();
 
             const newsCard = ecoNewsPage.getNewsItemByTitle(newsTitle);
-
             await expect(newsCard).toBeVisible();
 
             const newsTags = ecoNewsPage.getTagsForNewsItem(newsTitle);
@@ -239,6 +243,10 @@ test.describe('Create News Form Layout and Behavior (TC-03)', () => {
             await expect(newsTags).toContainText('Education');
             await expect(newsTags).toContainText('Ads');
         });
-    });
 
+        await test.step('Cleanup: delete published news', async () => {
+            await ecoNewsPage.navigate();
+            await ecoNewsPage.deleteNewsByTitle(newsTitle);
+        });
+    });
 });
