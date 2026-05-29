@@ -171,8 +171,7 @@ test.describe('Create News Form Layout and Behavior (TC-01)', () => {
 
 test.describe('Create News — Publish and Tag Limits (TC-03)', () => {
 
-    test('TC-03.1 Publish with 1 tag, then publish with 3 tags, then block 4th', async ({ ecoNewsPage, createNewsPage, page }) => {
-        // ── Steps 1-5: Publish news with 1 tag ──────────────────────────
+    test('TC-03.1 Publish news with 1 tag and verify', async ({ ecoNewsPage, createNewsPage, page }) => {
         await test.step('1. Navigate to Eco News and click Create News', async () => {
             await ecoNewsPage.navigate();
             await ecoNewsPage.waitForPageReady();
@@ -195,7 +194,7 @@ test.describe('Create News — Publish and Tag Limits (TC-03)', () => {
             await page.waitForURL(/\/#\/(greenCity\/news|ubs)/);
         });
 
-        await test.step('5. Verify news is published with "News" tag', async () => {
+        await test.step('5. Verify published news has "News" tag', async () => {
             await ecoNewsPage.navigate();
             await ecoNewsPage.waitForPageReady();
             const newsCard = ecoNewsPage.getNewsItemByTitle('Test');
@@ -203,15 +202,17 @@ test.describe('Create News — Publish and Tag Limits (TC-03)', () => {
             const newsTags = ecoNewsPage.getTagsForNewsItem('Test');
             await expect(newsTags).toHaveText(/News/i);
         });
+    });
 
-        // ── Steps 6-9: Publish news with 3 tags ─────────────────────────
-        await test.step('6. Navigate to Create News form (fresh)', async () => {
-            await createNewsPage.page.reload();
-            await createNewsPage.navigate();
+    test('TC-03.2 Publish news with 3 tags and verify', async ({ ecoNewsPage, createNewsPage, page }) => {
+        await test.step('1. Navigate to Eco News and click Create News', async () => {
+            await ecoNewsPage.navigate();
+            await ecoNewsPage.waitForPageReady();
+            await ecoNewsPage.clickCreateNews();
             await createNewsPage.waitForFormReady();
         });
 
-        await test.step('7. Select 3 tags: News, Events, Education', async () => {
+        await test.step('2. Select 3 tags: News, Events, Education', async () => {
             await createNewsPage.selectTag(NEWS_TAGS.NEWS);
             await expect(createNewsPage.getTagButton(NEWS_TAGS.NEWS).locator('a')).toHaveClass(/global-tag-clicked/);
 
@@ -222,34 +223,33 @@ test.describe('Create News — Publish and Tag Limits (TC-03)', () => {
             await expect(createNewsPage.getTagButton(NEWS_TAGS.EDUCATION).locator('a')).toHaveClass(/global-tag-clicked/);
         });
 
-        await test.step('Fill title "Test" and content', async () => {
+        await test.step('3. Fill title "Test" and content', async () => {
             await createNewsPage.fillTitle('Test');
             await createNewsPage.fillContent('Test content with 20 chars');
         });
 
-        await test.step('8. Click Publish', async () => {
+        await test.step('4. Click Publish', async () => {
             await createNewsPage.clickPublish();
             await page.waitForURL(/\/#\/(greenCity\/news|ubs)/);
         });
 
-        await test.step('9. Verify news is published with all 3 tags', async () => {
+        await test.step('5. Verify published news has all 3 tags', async () => {
             await ecoNewsPage.navigate();
             await ecoNewsPage.waitForPageReady();
             const newsCard = ecoNewsPage.getNewsItemByTitle('Test');
             await expect(newsCard).toBeVisible({ timeout: 10000 });
             const newsTags = ecoNewsPage.getTagsForNewsItem('Test');
-            await expect(newsTags).toHaveText(/News.*Education/i);
+            await expect(newsTags).toHaveText(/News.*Events.*Education/i);
         });
-
     });
 
-    test('TC-03.2 Block 4th tag selection', async ({ createNewsPage }) => {
+    test('TC-03.3 Block 4th tag selection', async ({ createNewsPage }) => {
         await test.step('Navigate to Create News form', async () => {
             await createNewsPage.navigate();
             await createNewsPage.waitForFormReady();
         });
 
-        await test.step('10. Select 3 tags then attempt 4th', async () => {
+        await test.step('Select 3 tags then attempt 4th', async () => {
             await createNewsPage.selectTag(NEWS_TAGS.NEWS);
             await createNewsPage.selectTag(NEWS_TAGS.EVENTS);
             await createNewsPage.selectTag(NEWS_TAGS.EDUCATION);
@@ -261,7 +261,7 @@ test.describe('Create News — Publish and Tag Limits (TC-03)', () => {
             await createNewsPage.selectTag(NEWS_TAGS.INITIATIVES);
         });
 
-        await test.step('11. Verify 4th tag is blocked', async () => {
+        await test.step('Verify 4th tag is blocked', async () => {
             await expect(createNewsPage.getTagButton(NEWS_TAGS.INITIATIVES).locator('a')).not.toHaveClass(/global-tag-clicked/);
         });
     });
