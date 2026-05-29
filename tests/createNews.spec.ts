@@ -204,11 +204,6 @@ test.describe('Create News — Publish and Tag Limits (TC-03)', () => {
             await expect(newsTags).toHaveText(/News/i);
         });
 
-        // ── Cleanup first news item ─────────────────────────────────────
-        await test.step('Cleanup: delete first news', async () => {
-            await ecoNewsPage.deleteNewsByTitle('Test');
-        });
-
         // ── Steps 6-9: Publish news with 3 tags ─────────────────────────
         await test.step('6. Navigate to Create News form (fresh)', async () => {
             await createNewsPage.page.reload();
@@ -246,10 +241,6 @@ test.describe('Create News — Publish and Tag Limits (TC-03)', () => {
             await expect(newsTags).toHaveText(/News.*Education/i);
         });
 
-        // ── Cleanup second news item ────────────────────────────────────
-        await test.step('Cleanup: delete second news', async () => {
-            await ecoNewsPage.deleteNewsByTitle('Test');
-        });
     });
 
     test('TC-03.2 Block 4th tag selection', async ({ createNewsPage }) => {

@@ -54,24 +54,5 @@ export class EcoNewsPage extends BasePage {
     return newsCard.locator('.filter-tag');
   }
 
-  /** Delete a news item by navigating to its details and clicking Delete. */
-  async deleteNewsByTitle(title: string): Promise<void> {
-    await this.step(`Delete news: "${title}"`, async () => {
-      const card = this.getNewsItemByTitle(title);
-      if (await card.count() === 0) return;
-      // Dismiss any overlay/dialog/snackbar that may be blocking
-      await this.page.keyboard.press('Escape');
-      await this.page.locator('.cdk-overlay-backdrop').waitFor({ state: 'detached', timeout: 3000 }).catch(() => {});
-      await card.click();
-      await this.page.waitForURL('**/news/**');
-      const deleteBtn = this.page.getByRole('button', { name: /delete|видалити/i });
-      await deleteBtn.waitFor({ state: 'visible', timeout: 5000 });
-      await deleteBtn.click();
-      // Confirm deletion dialog
-      const confirmBtn = this.page.getByRole('button', { name: /yes|так|confirm/i });
-      await confirmBtn.waitFor({ state: 'visible', timeout: 5000 });
-      await confirmBtn.click();
-      await this.page.waitForURL('**/news');
-    });
-  }
 }
+
