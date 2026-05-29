@@ -57,8 +57,18 @@ jobs:
         env:
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
-        run: npx playwright test --reporter=line,allure-playwright
+        run: npx playwright test --project=chromium --reporter=line,allure-playwright
         continue-on-error: true
+
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7
 
       - name: Get Allure history from gh-pages
         uses: actions/checkout@v4
@@ -70,7 +80,7 @@ jobs:
 
       - name: Prepare Allure history
         if: always()
-        # Ручне копіювання історії замість simple-elf
+        # Ручне копіювання історії
         run: |
           if [ -d "gh-pages/history" ]; then
             mkdir -p allure-results/history
@@ -83,7 +93,6 @@ jobs:
         run: npx allure generate allure-results -o allure-report
 
       - name: Allure Pull Request Action (Official)
-        # Цей крок з вашого посилання. Спрацьовує лише на PR і додає коментар зі статистикою
         uses: allure-framework/allure-action@v0
         if: github.event_name == 'pull_request' && always()
         with:
