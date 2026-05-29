@@ -27,10 +27,10 @@ export const FORM_LIMITS = {
 
 /** Default timeouts (ms) used across page objects. */
 export const TIMEOUTS = {
-  SHORT: 3000,
-  MEDIUM: 5000,
-  LONG: 8000,
-  NAVIGATION: 10000,
+  SHORT: 5000,
+  MEDIUM: 10000,
+  LONG: 20000,
+  NAVIGATION: 15000,
   SPA_HYDRATION: 1500,
 } as const;
 

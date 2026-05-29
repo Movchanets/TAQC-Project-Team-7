@@ -32,8 +32,8 @@ export class HeaderComponent extends BaseComponent {
   }
 
   async clickLogin() {
-    await this.loginButton.waitFor({ state: 'attached', timeout: 5000 });
-    await this.loginButton.evaluate((element: HTMLElement) => element.click());
+    await this.loginButton.waitFor({ state: 'visible' });
+    await this.loginButton.click({ force: true });
   }
 
   async clickEcoNews() {

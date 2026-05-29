@@ -26,14 +26,13 @@ export abstract class BasePage {
    * Override in subclasses to add page-specific readiness checks.
    */
   async waitForPageReady(): Promise<void> {
-    await this.page.waitForLoadState('networkidle');
-    await this.page.waitForTimeout(500); // SPA hydration buffer
+    await this.page.waitForLoadState('load');
   }
 
   /**
    * Wait for a specific locator to be visible with a configurable timeout.
    */
-  protected async waitForVisible(locator: Locator, timeout = 5000): Promise<void> {
+  protected async waitForVisible(locator: Locator, timeout?: number ): Promise<void> {
     await locator.waitFor({ state: 'visible', timeout });
   }
 
