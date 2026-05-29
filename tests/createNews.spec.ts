@@ -1,5 +1,4 @@
 import { test, expect } from '../fixtures/index';
-import { TIMEOUTS } from '../utils/constants';
 
 test.describe('Create News Form Layout and Behavior (TC-01)', () => {
 

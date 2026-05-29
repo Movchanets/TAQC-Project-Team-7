@@ -1,5 +1,11 @@
 import { test, expect } from '../fixtures/index';
 
+
+
+
+test.use({ storageState: { cookies: [], origins: [] } });
+
+
 test.describe('Login Tests', () => {
 
   test.beforeEach(async ({ homePage }) => {

@@ -147,6 +147,11 @@ This framework follows the **Page Object Model (POM)** pattern:
 - **`ENV`** — A single source of truth for all environment configuration, validated at startup.
 - **`playwright.config.ts`** — Centrally configured using `ENV`, ensuring no magic strings are scattered across specs.
 
+### Authentication Strategy (Storage State)
+This framework avoids the anti-pattern of logging in via UI before every test. 
+Instead, it uses Playwright's **Global Setup** (`tests/auth.setup.ts`). 
+The setup script runs once, authenticates via the UI, and saves the browser state (Cookies/LocalStorage) to `playwright/.auth/user.json`. All subsequent E2E tests inject this state, starting fully authenticated and reducing server load and execution time.
+
 ---
 
 ## Iteration Roadmap
