@@ -10,14 +10,12 @@ import { ROUTES, TIMEOUTS } from '../utils/constants';
 export class EcoNewsPage extends BasePage {
   readonly createNewsButton: Locator;
   readonly newsItems: Locator;
-  readonly newsItemLinks: Locator;
 
   constructor(page: Page) {
     super(page);
 
-    this.createNewsButton = page.locator('#create-button, button:has-text("Create news")');
-    this.newsItems = page.locator('app-eco-news-list-item, .gallery-view-table-list');
-    this.newsItemLinks = page.locator('app-eco-news-list-item a, .gallery-view-table-list a');
+    this.createNewsButton = page.getByRole('link', { name: /create news|створити новину/i });
+    this.newsItems = page.locator('.list-gallery');
   }
 
   get url(): string {
@@ -26,11 +24,8 @@ export class EcoNewsPage extends BasePage {
 
   /** Wait for the news list to load. */
   async waitForPageReady(): Promise<void> {
-    await this.page.waitForLoadState('networkidle');
-    await Promise.race([
-      this.newsItems.first().waitFor({ state: 'visible', timeout: TIMEOUTS.LONG }),
-      this.createNewsButton.waitFor({ state: 'visible', timeout: TIMEOUTS.LONG }),
-    ]).catch(() => {});
+    await this.page.waitForLoadState('load');
+    await this.newsItems.first().waitFor({ state: 'visible', timeout: TIMEOUTS.LONG }).catch(() => {});
   }
 
   /** Click the Create News button. */
@@ -38,6 +33,7 @@ export class EcoNewsPage extends BasePage {
     await this.step('Click "Create News"', async () => {
       await this.waitForVisible(this.createNewsButton, TIMEOUTS.MEDIUM);
       await this.createNewsButton.click();
+      await this.page.waitForURL('**/news/create-news');
     });
   }
 
@@ -45,14 +41,6 @@ export class EcoNewsPage extends BasePage {
   async getNewsItemsCount(): Promise<number> {
     await this.waitForVisible(this.newsItems.first(), TIMEOUTS.MEDIUM);
     return this.newsItems.count();
-  }
-
-  /** Click on the first news item to open its details. */
-  async clickFirstNewsItem(): Promise<void> {
-    await this.step('Click first news item', async () => {
-      await this.waitForVisible(this.newsItemLinks.first(), TIMEOUTS.MEDIUM);
-      await this.newsItemLinks.first().click();
-    });
   }
 
   /** Find a news item by its title and return its locator. */
@@ -71,11 +59,15 @@ export class EcoNewsPage extends BasePage {
     await this.step(`Delete news: "${title}"`, async () => {
       const card = this.getNewsItemByTitle(title);
       if (await card.count() === 0) return;
+      // Dismiss any overlay/dialog/snackbar that may be blocking
+      await this.page.keyboard.press('Escape');
+      await this.page.locator('.cdk-overlay-backdrop').waitFor({ state: 'detached', timeout: 3000 }).catch(() => {});
       await card.click();
       await this.page.waitForURL('**/news/**');
       const deleteBtn = this.page.getByRole('button', { name: /delete|видалити/i });
       await deleteBtn.waitFor({ state: 'visible', timeout: 5000 });
       await deleteBtn.click();
+      // Confirm deletion dialog
       const confirmBtn = this.page.getByRole('button', { name: /yes|так|confirm/i });
       await confirmBtn.waitFor({ state: 'visible', timeout: 5000 });
       await confirmBtn.click();

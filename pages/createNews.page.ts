@@ -1,7 +1,7 @@
 import { Locator, Page } from '@playwright/test';
 import { BasePage } from './base.page';
 import { ENV } from '../utils/env';
-import { FORM_LIMITS, TIMEOUTS, ROUTES } from '../utils/constants';
+import { FORM_LIMITS, TIMEOUTS, ROUTES, NEWS_TAGS } from '../utils/constants';
 
 /**
  * CreateNewsPage
@@ -106,7 +106,7 @@ export class CreateNewsPage extends BasePage {
    * Select a tag by its display name.
    * @param tagName - Tag label (e.g., 'News', 'Events', 'Education')
    */
-  async selectTag(tagName: string): Promise<void> {
+  async selectTag(tagName: string | RegExp): Promise<void> {
     await this.step(`Select tag: "${tagName}"`, async () => {
       const tag = this.getTagButton(tagName);
       await tag.waitFor({ state: 'visible', timeout: TIMEOUTS.MEDIUM });
@@ -117,7 +117,7 @@ export class CreateNewsPage extends BasePage {
   /**
    * Deselect a previously selected tag.
    */
-  async deselectTag(tagName: string): Promise<void> {
+  async deselectTag(tagName: string | RegExp): Promise<void> {
     await this.step(`Deselect tag: "${tagName}"`, async () => {
       const tag = this.getTagButton(tagName);
       await tag.click();
@@ -131,7 +131,7 @@ export class CreateNewsPage extends BasePage {
   }
 
   /** Check if a specific tag button is currently selected. */
-  async isTagSelected(tagName: string): Promise<boolean> {
+  async isTagSelected(tagName: string | RegExp): Promise<boolean> {
     const tag = this.getTagButton(tagName);
     const classes = await tag.getAttribute('class') ?? '';
     return classes.includes('selected') || classes.includes('active');
@@ -267,15 +267,16 @@ export class CreateNewsPage extends BasePage {
   // ── Helpers ────────────────────────────────────────────────────────────
 
   /** Get tag button locator by its text name. */
-  getTagButton(name: string): Locator {
-    return this.tagButtons.filter({ hasText: new RegExp(`^${name}$`) });
+  getTagButton(name: string | RegExp): Locator {
+    const pattern = name instanceof RegExp ? name : new RegExp(`^${name}$`);
+    return this.tagButtons.filter({ hasText: pattern });
   }
 
   /**
    * Fill all required form fields and select a tag.
    * Convenience method for tests that need a valid form before asserting.
    */
-  async fillRequiredFields(title: string, content: string, tagName = 'News'): Promise<void> {
+  async fillRequiredFields(title: string, content: string, tagName: string | RegExp = NEWS_TAGS.NEWS): Promise<void> {
     await this.step('Fill all required fields', async () => {
       await this.fillTitle(title);
       await this.selectTag(tagName);
