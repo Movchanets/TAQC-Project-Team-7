@@ -1,7 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 import { ENV } from "./utils/env";
 
-// Extract the base domain URL from ENV.BASE_URL to support relative routing with hashes
 const baseUri = new URL(ENV.BASE_URL);
 const domainBaseUrl = `${baseUri.protocol}//${baseUri.host}/`;
 
@@ -10,47 +9,48 @@ export default defineConfig({
   fullyParallel: true,
   timeout: ENV.TIMEOUT,
   retries: ENV.RETRIES,
-  workers: undefined,
+  workers: ENV.WORKERS,
   reporter: [["list"], ["html", { open: "never" }], ["allure-playwright"]],
   use: {
     baseURL: domainBaseUrl,
     headless: ENV.HEADLESS,
     screenshot: "only-on-failure",
     trace: "retain-on-failure",
+    // GreenCity may have self-signed certs in staging environments
     ignoreHTTPSErrors: true,
     viewport: { width: 1920, height: 1080 },
   },
   projects: [
-    { 
-      name: 'setup', 
-      testMatch: /.*\.setup\.ts/ 
+    // ── Setup: runs once, saves auth state ──────────────────────────────
+    {
+      name: "setup",
+      testMatch: /.*\.setup\.ts/,
     },
+
+    // ── Browser projects: depend on setup, load saved session ───────────
     {
       name: "chromium",
-      use: { 
-        ...devices["Desktop Chrome"], 
-        viewport: { width: 1920, height: 1080 },
-        storageState: 'playwright/.auth/user.json', 
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: "playwright/.auth/user.json",
       },
-      dependencies: ['setup'],
+      dependencies: ["setup"],
     },
     {
       name: "firefox",
-      use: { 
+      use: {
         ...devices["Desktop Firefox"],
-        viewport: { width: 1920, height: 1080 },
-        storageState: 'playwright/.auth/user.json', 
+        storageState: "playwright/.auth/user.json",
       },
-      dependencies: ['setup'],
+      dependencies: ["setup"],
     },
     {
       name: "webkit",
-      use: { 
+      use: {
         ...devices["Desktop Safari"],
-        viewport: { width: 1920, height: 1080 },
-        storageState: 'playwright/.auth/user.json', 
+        storageState: "playwright/.auth/user.json",
       },
-      dependencies: ['setup'],
+      dependencies: ["setup"],
     },
   ],
 });

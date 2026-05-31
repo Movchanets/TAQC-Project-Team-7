@@ -18,3 +18,4 @@ docs/
 
 # Project
 agents.md
+.playwright-mcp/

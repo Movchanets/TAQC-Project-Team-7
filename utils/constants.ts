@@ -3,13 +3,13 @@
  * Single source of truth for tag names, timeouts, and selectors.
  */
 
-/** News tags available in the Create News form (Ukrainian UI labels). */
+/** News tags available in the Create News form (bilingual: Ukrainian + English). */
 export const NEWS_TAGS = {
-  NEWS: 'News',
-  EVENTS: 'Events',
-  EDUCATION: 'Education',
-  INITIATIVES: 'Initiatives',
-  ADS: 'Ads',
+  NEWS: /Новини|News/i,
+  EVENTS: /Події|Events/i,
+  EDUCATION: /Освіта|Education/i,
+  INITIATIVES: /Ініціативи|Initiatives/i,
+  ADS: /Реклама|Ads/i,
 } as const;
 
 /** All tag values as an ordered array. */
