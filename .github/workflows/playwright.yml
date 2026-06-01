@@ -80,25 +80,17 @@ jobs:
 
       - name: Prepare Allure history
         if: always()
-        # Ручне копіювання історії
         run: |
+          mkdir -p allure-history
           if [ -d "gh-pages/history" ]; then
-            mkdir -p allure-results/history
-            cp -r gh-pages/history/* allure-results/history/
+            cp -r gh-pages/history/* allure-history/
           fi
+          echo "=== allure-history/ contents ==="
+          ls -la allure-history/
 
-      - name: Generate Allure Report natively
+      - name: Generate Allure Report
         if: always()
-        run: npx allure generate allure-results -o allure-report
-
-      - name: Copy history into generated report
-        if: always()
-        run: |
-          if [ -d "gh-pages/history" ]; then
-            cp -r gh-pages/history/* allure-report/history/ 2>/dev/null || true
-          fi
-          echo "=== allure-report/history/ contents ==="
-          ls -la allure-report/history/ 2>/dev/null || echo "No history dir in report"
+        run: npx allure generate allure-results -o allure-report --history-dir allure-history
 
       - name: Allure Pull Request Action (Official)
         uses: allure-framework/allure-action@v0
