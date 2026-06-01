@@ -81,16 +81,28 @@ jobs:
       - name: Prepare Allure history
         if: always()
         run: |
-          mkdir -p allure-history
           if [ -d "gh-pages/history" ]; then
-            cp -r gh-pages/history/* allure-history/
+            mkdir -p allure-results/history
+            cp -r gh-pages/history/* allure-results/history/
           fi
-          echo "=== allure-history/ contents ==="
-          ls -la allure-history/
+          echo "=== allure-results/history/ ==="
+          ls -la allure-results/history/ 2>/dev/null || echo "No history in results yet"
 
       - name: Generate Allure Report
         if: always()
-        run: npx allure generate allure-results -o allure-report --history-dir allure-history
+        run: npx allure generate allure-results -o allure-report --clean --history-limit 20
+
+      - name: Debug report structure
+        if: always()
+        run: |
+          echo "=== allure-report top-level ==="
+          ls -la allure-report/
+          echo ""
+          echo "=== allure-report/history/ ==="
+          ls -la allure-report/history/ 2>/dev/null || echo "NO history/ dir in report"
+          echo ""
+          echo "=== allure-results/ (after generate) ==="
+          ls allure-results/ | head -20
 
       - name: Allure Pull Request Action (Official)
         uses: allure-framework/allure-action@v0
