@@ -89,8 +89,16 @@ jobs:
 
       - name: Generate Allure Report natively
         if: always()
-        # Використовуємо нативну CLI утиліту для генерації звіту
         run: npx allure generate allure-results -o allure-report
+
+      - name: Copy history into generated report
+        if: always()
+        run: |
+          if [ -d "gh-pages/history" ]; then
+            cp -r gh-pages/history/* allure-report/history/ 2>/dev/null || true
+          fi
+          echo "=== allure-report/history/ contents ==="
+          ls -la allure-report/history/ 2>/dev/null || echo "No history dir in report"
 
       - name: Allure Pull Request Action (Official)
         uses: allure-framework/allure-action@v0
