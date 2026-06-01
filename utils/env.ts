@@ -1,8 +1,8 @@
-import * as dotenv from "dotenv";
-import * as path from "path";
+import * as dotenv from 'dotenv';
+import * as path from 'path';
 
 // Load .env from the project root
-dotenv.config({ path: path.resolve(__dirname, "..", ".env") });
+dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 
 function requireEnv(key: string, fallback?: string): string {
   const value = process.env[key] ?? fallback;
@@ -13,11 +13,10 @@ function requireEnv(key: string, fallback?: string): string {
 }
 
 export const ENV = {
-  BASE_URL: requireEnv("BASE_URL", "http://localhost:3000"),
-  HEADLESS: requireEnv("HEADLESS", "true") === "true",
-  RETRIES: parseInt(requireEnv("RETRIES", "0"), 10),
-  TIMEOUT: parseInt(requireEnv("TIMEOUT", "60000"), 10),
-  LOGIN_EMAIL: requireEnv("LOGIN_EMAIL", ""),
-  LOGIN_PASSWORD: requireEnv("LOGIN_PASSWORD", ""),
-  WORKERS: parseInt(requireEnv("WORKERS", "1"), 10),
+  BASE_URL: requireEnv('BASE_URL', 'http://localhost:3000'),
+  HEADLESS: requireEnv('HEADLESS', 'true') === 'true',
+  RETRIES: parseInt(requireEnv('RETRIES', '0'), 10),
+  TIMEOUT: parseInt(requireEnv('TIMEOUT', '60000'), 10),
+  LOGIN_EMAIL: requireEnv('LOGIN_EMAIL', ''),
+  LOGIN_PASSWORD: requireEnv('LOGIN_PASSWORD', ''),
 } as const;

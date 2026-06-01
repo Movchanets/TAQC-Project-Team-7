@@ -65,14 +65,10 @@ export class ProfilePage extends BasePage {
     this.todoItemsCount = page.locator('app-to-do-list .items-count:visible');
   }
 
-  get url(): string {
-    return ROUTES.PROFILE;
-  }
-
   /** Navigate directly to the profile page. */
   async navigate(): Promise<void> {
-    const base = new URL(ENV.BASE_URL);
-    const targetRoute = `${base.hash || ROUTES.HOME}/profile`;
+    const url = new URL(ENV.BASE_URL);
+    const targetRoute = `${url.hash || ROUTES.HOME}/profile`;
     await this.page.goto(targetRoute);
   }
 

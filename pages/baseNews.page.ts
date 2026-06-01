@@ -8,7 +8,7 @@ import { TIMEOUTS } from '../utils/constants';
  * Shared base for NewsPreviewPage and NewsDetailsPage.
  * Encapsulates common news display locators (title, date, author, tags, content).
  */
-export abstract class BaseNewsPage extends BasePage {
+export class BaseNewsPage extends BasePage {
   readonly tagsContainer: Locator;
   readonly tagItems: Locator;
   readonly newsContentContainer: Locator;
@@ -31,16 +31,15 @@ export abstract class BaseNewsPage extends BasePage {
     this.contentText = page.locator('.news-text-content.word-wrap');
   }
 
-  get url(): string {
-    throw new Error('BaseNewsPage does not have a direct URL. Use a concrete subclass.');
-  }
-
   /** Navigate — must be overridden by concrete subclasses. */
-  abstract navigate(): Promise<void>;
+  async navigate(): Promise<void> {
+    throw new Error('navigate() must be implemented by subclass');
+  }
 
   /** Wait for the news content to be fully rendered. */
   async waitForPageReady(): Promise<void> {
     await this.waitForVisible(this.newsTitle, TIMEOUTS.LONG);
+    await this.page.waitForTimeout(300);
   }
 
   /** Get all tag labels displayed on the news article. */

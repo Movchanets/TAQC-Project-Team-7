@@ -19,15 +19,6 @@ export class NewsPreviewPage extends BaseNewsPage {
     this.publishButton = page.getByRole('button', { name: /publish|опублікувати/i });
   }
 
-  get url(): string {
-    throw new Error('NewsPreviewPage does not have a direct URL. Navigate via CreateNewsPage.clickPreview().');
-  }
-
-  /** Navigate — NewsPreviewPage is reached from CreateNewsPage, not via direct URL. */
-  async navigate(): Promise<void> {
-    throw new Error('NewsPreviewPage is reached from CreateNewsPage.clickPreview(). Use navigateToArticle() instead.');
-  }
-
   /** Navigate back to the edit form. */
   async goBackToEditing(): Promise<void> {
     await this.step('Click "Back to editing"', async () => {

@@ -1,5 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 import { BasePage } from './base.page';
+import { ENV } from '../utils/env';
 import { ROUTES, TIMEOUTS } from '../utils/constants';
 
 /**
@@ -10,35 +11,38 @@ import { ROUTES, TIMEOUTS } from '../utils/constants';
 export class EcoNewsPage extends BasePage {
   readonly createNewsButton: Locator;
   readonly newsItems: Locator;
-  /** User avatar or profile menu — indicates Angular has detected auth state. */
-  readonly userMenu: Locator;
+  readonly newsItemLinks: Locator;
 
   constructor(page: Page) {
     super(page);
 
-    this.createNewsButton = page.getByRole('link', { name: /create news|створити новину/i });
-    this.newsItems = page.locator('.list-gallery');
-    this.userMenu = page.locator('[class*="profile"], [href*="profile"], .user-avatar, .header_user');
+    this.createNewsButton = page.locator('#create-button, button:has-text("Create news")');
+    this.newsItems = page.locator('app-news-list-gallery-view, app-eco-news-list-item');
+    this.newsItemLinks = page.locator('app-eco-news-list-item a, .gallery-view-table-list a');
   }
 
-  get url(): string {
-    return ROUTES.NEWS;
+  /** Navigate to the Eco News page. */
+  async navigate(): Promise<void> {
+    const url = new URL(ENV.BASE_URL);
+    const targetRoute = `${url.hash || ROUTES.HOME}/news`;
+    await this.page.goto(targetRoute);
+    await this.waitForPageReady();
   }
 
-  /** Wait for the news list to load and Angular to detect auth state. */
+  /** Wait for the news list to load. */
   async waitForPageReady(): Promise<void> {
-    await this.page.waitForLoadState('load');
-    await this.newsItems.first().waitFor({ state: 'visible', timeout: TIMEOUTS.LONG }).catch(() => {});
-    // Wait for Angular to hydrate auth-dependent UI (profile menu = logged-in state detected)
-    await this.userMenu.first().waitFor({ state: 'visible', timeout: TIMEOUTS.LONG }).catch(() => {});
+    // Wait for at least one news item or the create button
+    await Promise.race([
+      this.newsItems.first().waitFor({ state: 'visible', timeout: TIMEOUTS.LONG }),
+      this.createNewsButton.waitFor({ state: 'visible', timeout: TIMEOUTS.LONG }),
+    ]).catch(() => {});
   }
 
   /** Click the Create News button. */
   async clickCreateNews(): Promise<void> {
     await this.step('Click "Create News"', async () => {
-      await this.waitForVisible(this.createNewsButton, TIMEOUTS.LONG);
+      await this.waitForVisible(this.createNewsButton, TIMEOUTS.MEDIUM);
       await this.createNewsButton.click();
-      await this.page.waitForURL('**/news/create-news');
     });
   }
 
@@ -48,15 +52,22 @@ export class EcoNewsPage extends BasePage {
     return this.newsItems.count();
   }
 
-  /** Find a news item by its title and return its locator. */
+  /** Click on the first news item to open its details. */
+  async clickFirstNewsItem(): Promise<void> {
+    await this.step('Click first news item', async () => {
+      await this.waitForVisible(this.newsItemLinks.first(), TIMEOUTS.MEDIUM);
+      await this.newsItemLinks.first().click();
+    });
+  }
+
+  /** Find a news item by its title and return its locator. Assumes titles are unique on the page. */
   getNewsItemByTitle(title: string): Locator {
     return this.newsItems.filter({ hasText: title }).first();
   }
-
-  /** Get the tags associated with a news item by its title. */
+  
+ // ** Get the tags associated with a news item by its title. */
   getTagsForNewsItem(title: string): Locator {
-    const newsCard = this.getNewsItemByTitle(title);
+    const newsCard = this.getNewsItemByTitle(title); 
     return newsCard.locator('.filter-tag');
   }
-
 }

@@ -1,12 +1,12 @@
-import { Page, type Locator } from '@playwright/test';
+import { Page, Locator } from '@playwright/test';
 import * as allure from 'allure-js-commons';
-import { ENV } from '../utils/env';
 
 /**
  * BasePage
  *
  * Abstract foundation for all Page Object classes.
  * Provides shared utilities: navigation, readiness checks, Allure step logging.
+ * All concrete page objects must extend this class.
  */
 export abstract class BasePage {
   readonly page: Page;
@@ -16,24 +16,14 @@ export abstract class BasePage {
   }
 
   /**
-   * The route hash for this page (e.g., '#/greenCity/news').
-   * Override in concrete page classes that support direct navigation.
+   * Navigate to the page's primary URL.
+   * Must be overridden by each concrete page class.
    */
-  abstract get url(): string;
+  abstract navigate(): Promise<void>;
 
   /**
-   * Navigate to the page's primary URL using the hash-based route.
-   * Override in subclasses for custom navigation (modals, parameterized URLs).
-   */
-  async navigate(): Promise<void> {
-    const base = new URL(ENV.BASE_URL);
-    await this.page.goto(`${base.origin}${base.pathname}${this.url}`);
-  }
-
-  /**
-   * Wait for the page to be fully ready.
-   * Uses 'load' instead of 'networkidle' — GreenCity has persistent
-   * WebSocket (STOMP) connections that prevent networkidle from resolving.
+   * Wait for the page to be fully ready (network idle + SPA hydration).
+   * Override in subclasses to add page-specific readiness checks.
    */
   async waitForPageReady(): Promise<void> {
     await this.page.waitForLoadState('load');
@@ -42,12 +32,13 @@ export abstract class BasePage {
   /**
    * Wait for a specific locator to be visible with a configurable timeout.
    */
-  protected async waitForVisible(locator: Locator, timeout?: number): Promise<void> {
+  protected async waitForVisible(locator: Locator, timeout?: number ): Promise<void> {
     await locator.waitFor({ state: 'visible', timeout });
   }
 
   /**
    * Execute a step with Allure logging.
+   * Wraps allure.step() for consistent reporting across all page objects.
    */
   protected async step<T>(name: string, fn: () => Promise<T>): Promise<T> {
     return allure.step(name, fn);

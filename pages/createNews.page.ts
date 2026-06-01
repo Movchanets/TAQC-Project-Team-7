@@ -1,7 +1,7 @@
-import { Locator, Page } from '@playwright/test';
+import { Locator, Page, expect } from '@playwright/test';
 import { BasePage } from './base.page';
 import { ENV } from '../utils/env';
-import { FORM_LIMITS, TIMEOUTS, ROUTES, NEWS_TAGS } from '../utils/constants';
+import { FORM_LIMITS, TIMEOUTS, ROUTES } from '../utils/constants';
 
 /**
  * CreateNewsPage
@@ -25,12 +25,9 @@ export class CreateNewsPage extends BasePage {
   readonly previewButton: Locator;
   readonly publishButton: Locator;
 
-  // ── Loading State ─────────────────────────────────────────────────────
-  readonly loadingSpinner: Locator;
-  readonly loadingMessage: Locator;
-
   // ── Validation & Feedback ────────────────────────────────────────────
   readonly titleCounter: Locator;
+  readonly contentCounter: Locator;
   readonly validationErrors: Locator;
 
   // ── Cancel Modal ─────────────────────────────────────────────────────
@@ -55,12 +52,9 @@ export class CreateNewsPage extends BasePage {
     this.previewButton = page.locator('div.submit-buttons button.secondary-global-button');
     this.publishButton = page.locator('div.submit-buttons button.primary-global-button[type="submit"]');
 
-    // Loading State (appears after publish)
-    this.loadingSpinner = page.locator('.spinner, .loading-spinner, [class*="spinner"]');
-    this.loadingMessage = page.getByText(/please wait|loading to website|wait until page refreshes/i);
-
     // Validation & Feedback
     this.titleCounter = page.locator('span, div, p').filter({ hasText: /\d+\s*\/\s*170/ }).first();
+    this.contentCounter = page.locator('span, div, p').filter({ hasText: /63\s*206/ }).first();
     this.validationErrors = page.locator('.error-message, .mat-error, .validation-error, [class*="error"]');
 
     // Cancel Modal
@@ -71,20 +65,18 @@ export class CreateNewsPage extends BasePage {
 
   // ── Navigation ─────────────────────────────────────────────────────────
 
-  get url(): string {
-    return ROUTES.CREATE_NEWS;
-  }
-
   /** Navigate directly to the Create News form. */
   async navigate(): Promise<void> {
-    const base = new URL(ENV.BASE_URL);
-    await this.page.goto(`${base.origin}${base.pathname}${ROUTES.CREATE_NEWS}`);
+    const url = new URL(ENV.BASE_URL);
+    const targetRoute = `${url.hash || ROUTES.HOME}/news/create-news`;
+    await this.page.goto(targetRoute);
     await this.waitForPageReady();
   }
 
   /** Wait for the form to be fully loaded (title input visible). */
   async waitForFormReady(): Promise<void> {
     await this.titleInput.waitFor({ state: 'visible', timeout: TIMEOUTS.LONG });
+    await expect(this.titleInput).toBeEditable();
   }
 
   // ── Field Actions ──────────────────────────────────────────────────────
@@ -94,7 +86,6 @@ export class CreateNewsPage extends BasePage {
     await this.step(`Fill title: "${title}"`, async () => {
       await this.titleInput.waitFor({ state: 'visible', timeout: TIMEOUTS.MEDIUM });
       await this.titleInput.fill(title);
-      await this.titleInput.dispatchEvent('input');
     });
   }
 
@@ -113,7 +104,7 @@ export class CreateNewsPage extends BasePage {
    * Select a tag by its display name.
    * @param tagName - Tag label (e.g., 'News', 'Events', 'Education')
    */
-  async selectTag(tagName: string | RegExp): Promise<void> {
+  async selectTag(tagName: string): Promise<void> {
     await this.step(`Select tag: "${tagName}"`, async () => {
       const tag = this.getTagButton(tagName);
       await tag.waitFor({ state: 'visible', timeout: TIMEOUTS.MEDIUM });
@@ -124,7 +115,7 @@ export class CreateNewsPage extends BasePage {
   /**
    * Deselect a previously selected tag.
    */
-  async deselectTag(tagName: string | RegExp): Promise<void> {
+  async deselectTag(tagName: string): Promise<void> {
     await this.step(`Deselect tag: "${tagName}"`, async () => {
       const tag = this.getTagButton(tagName);
       await tag.click();
@@ -138,7 +129,7 @@ export class CreateNewsPage extends BasePage {
   }
 
   /** Check if a specific tag button is currently selected. */
-  async isTagSelected(tagName: string | RegExp): Promise<boolean> {
+  async isTagSelected(tagName: string): Promise<boolean> {
     const tag = this.getTagButton(tagName);
     const classes = await tag.getAttribute('class') ?? '';
     return classes.includes('selected') || classes.includes('active');
@@ -163,7 +154,6 @@ export class CreateNewsPage extends BasePage {
       await this.contentEditor.waitFor({ state: 'visible', timeout: TIMEOUTS.MEDIUM });
       await this.contentEditor.click();
       await this.contentEditor.fill(text);
-      await this.contentEditor.dispatchEvent('input');
     });
   }
 
@@ -180,20 +170,16 @@ export class CreateNewsPage extends BasePage {
     await this.step(`Fill source: "${url}"`, async () => {
       await this.sourceInput.waitFor({ state: 'visible', timeout: TIMEOUTS.MEDIUM });
       await this.sourceInput.fill(url);
-      await this.sourceInput.dispatchEvent('input');
     });
   }
 
   // ── Button Actions ─────────────────────────────────────────────────────
 
-  /** Click the Publish button and wait for the loading spinner to finish. */
+  /** Click the Publish button. */
   async clickPublish(): Promise<void> {
     await this.step('Click Publish', async () => {
       await this.publishButton.waitFor({ state: 'visible', timeout: TIMEOUTS.MEDIUM });
       await this.publishButton.click();
-      // Wait for the loading overlay to appear then disappear
-      await this.loadingMessage.waitFor({ state: 'visible', timeout: TIMEOUTS.MEDIUM }).catch(() => {});
-      await this.loadingMessage.waitFor({ state: 'hidden', timeout: TIMEOUTS.LONG }).catch(() => {});
     });
   }
 
@@ -277,16 +263,15 @@ export class CreateNewsPage extends BasePage {
   // ── Helpers ────────────────────────────────────────────────────────────
 
   /** Get tag button locator by its text name. */
-  getTagButton(name: string | RegExp): Locator {
-    const pattern = name instanceof RegExp ? name : new RegExp(`^${name}$`);
-    return this.tagButtons.filter({ hasText: pattern });
+  getTagButton(name: string): Locator {
+    return this.tagButtons.filter({ hasText: new RegExp(`^${name}$`) });
   }
 
   /**
    * Fill all required form fields and select a tag.
    * Convenience method for tests that need a valid form before asserting.
    */
-  async fillRequiredFields(title: string, content: string, tagName: string | RegExp = NEWS_TAGS.NEWS): Promise<void> {
+  async fillRequiredFields(title: string, content: string, tagName = 'News'): Promise<void> {
     await this.step('Fill all required fields', async () => {
       await this.fillTitle(title);
       await this.selectTag(tagName);

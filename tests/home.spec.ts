@@ -1,17 +1,20 @@
-import { test, expect } from '../fixtures/index';
+import { test, expect } from '@playwright/test';
+import { HomePage } from '../pages/home.page';
 
-test.describe('Home Page', () => {
+test.describe('Home Page Tests', () => {
 
-  test('GreenCity homepage loads with logo and correct title', async ({ page, homePage }) => {
-    await test.step('Navigate to homepage', async () => {
+  test('TC-01 Open GreenCity homepage', async ({ page }) => {
+    const homePage = new HomePage(page);
+
+    await test.step('Navigate to GreenCity homepage', async () => {
       await homePage.navigate();
     });
 
-    await test.step('Header logo is visible', async () => {
+    await test.step('Verify header logo is visible', async () => {
       await expect(homePage.header.logo).toBeVisible();
     });
 
-    await test.step('Page title contains "GreenCity"', async () => {
+    await test.step('Verify page title contains "GreenCity"', async () => {
       await expect(page).toHaveTitle(/GreenCity/);
     });
   });

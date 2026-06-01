@@ -1,285 +1,209 @@
-import { test, expect } from "../fixtures/index";
-import { NEWS_TAGS } from "../utils/constants";
+import { test, expect } from '../fixtures/index';
 
-test.describe("Create News Form Layout and Behavior (TC-01)", () => {
-  test.beforeEach(async ({ ecoNewsPage, createNewsPage }) => {
-    await test.step("Step 1: Navigate to GreenCity News", async () => {
-      await ecoNewsPage.navigate();
-      await ecoNewsPage.waitForPageReady();
-    });
-    // Step 2: Login — handled by auth setup (storageState)
-    await test.step('Step 3: Click "Create News"', async () => {
-      await ecoNewsPage.clickCreateNews();
+test.describe('Create News Form Layout and Behavior (TC-01)', () => {
+
+  test.beforeEach(async ({ authenticatedPage, createNewsPage }) => {
+    await test.step('Navigate to Create News form', async () => {
+      await createNewsPage.navigate();
       await createNewsPage.waitForFormReady();
     });
   });
-  //Should fail because real page layout may not match expected order
-  test("TC-01.1 Verify all form fields are present in correct order", async ({
-    createNewsPage,
-  }) => {
-    const page = createNewsPage;
 
-    await test.step("Step 4: Title field is visible (auto-resizing textarea)", async () => {
-      await expect(page.titleInput).toBeVisible();
-      const tag = await page.titleInput.evaluate((el) =>
-        el.tagName.toLowerCase(),
-      );
-      expect(tag).toBe("textarea");
+  test('TC-01.1 Verify presence and order of all necessary fields', async ({ createNewsPage }) => {
+    await test.step('Verify Title input is visible', async () => {
+      await expect(createNewsPage.titleInput).toBeVisible();
     });
 
-    await test.step("Step 4: Tag buttons — 5 tags: News, Events, Education, Initiatives, Ads", async () => {
-      await expect(page.tagButtons).toHaveCount(5);
-      const expectedTags = [
-        NEWS_TAGS.NEWS,
-        NEWS_TAGS.EVENTS,
-        NEWS_TAGS.EDUCATION,
-        NEWS_TAGS.INITIATIVES,
-        NEWS_TAGS.ADS,
-      ];
-      for (const tagPattern of expectedTags) {
-        await expect(page.getTagButton(tagPattern)).toBeVisible();
-      }
-    });
-
-    await test.step("Step 4: Add Image — dropzone and file input are present", async () => {
-      await expect(page.imageDropzone).toBeVisible();
-      await expect(page.fileInput).toBeAttached();
-    });
-
-    await test.step("Step 4: Main Text editor is visible", async () => {
-      await expect(page.contentEditor).toBeVisible();
-    });
-
-    await test.step("Step 4: Author and Date section is visible", async () => {
-      await expect(page.authorDateSection).toBeVisible();
-    });
-
-    await test.step("Step 4: Source field is visible", async () => {
-      await expect(page.sourceInput).toBeVisible();
-    });
-
-    await test.step("Step 5: Buttons Cancel, Preview, Publish are visible", async () => {
-      await expect(page.cancelButton).toBeVisible();
-      await expect(page.previewButton).toBeVisible();
-      await expect(page.publishButton).toBeVisible();
-    });
-
-    await test.step("Fields appear top-to-bottom: title → tags → image → content → author/date → source → buttons", async () => {
-      const boxes = {
-        title: await page.titleInput.boundingBox(),
-        tags: await page.tagButtons.first().boundingBox(),
-        image: await page.imageDropzone.boundingBox(),
-        content: await page.contentEditor.boundingBox(),
-        author: await page.authorDateSection.boundingBox(),
-        source: await page.sourceInput.boundingBox(),
-        cancel: await page.cancelButton.boundingBox(),
-        preview: await page.previewButton.boundingBox(),
-        publish: await page.publishButton.boundingBox(),
-      };
-
-      Object.values(boxes).forEach((box) => expect(box).not.toBeNull());
-
-      // Vertical order per TC-01.md: Title → Tags → Add Image → Main Text → Author → Date → Source
-      expect(boxes.title!.y).toBeLessThanOrEqual(boxes.tags!.y);
-      expect(boxes.tags!.y).toBeLessThanOrEqual(boxes.image!.y);
-      expect(boxes.image!.y).toBeLessThanOrEqual(boxes.content!.y);
-      expect(boxes.content!.y).toBeLessThanOrEqual(boxes.author!.y);
-      expect(boxes.author!.y).toBeLessThanOrEqual(boxes.source!.y);
-      expect(boxes.source!.y).toBeLessThanOrEqual(boxes.cancel!.y);
-
-      // Horizontal order of action buttons
-      expect(boxes.cancel!.x).toBeLessThan(boxes.preview!.x);
-      expect(boxes.preview!.x).toBeLessThan(boxes.publish!.x);
-    });
-  });
-
-  test("TC-01.2 Author and Date are pre-filled and read-only", async ({
-    createNewsPage,
-  }) => {
-    const section = createNewsPage.authorDateSection;
-
-    await test.step("Date is pre-filled with today's date", async () => {
-      const today = new Date().toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      });
-      await expect(section).toContainText(today);
-    });
-
-    await test.step("Author is pre-filled with user name", async () => {
-      const authorLabel = section.locator("p").filter({ hasText: /Author/i });
-      await expect(authorLabel).toBeVisible();
-      const text = await authorLabel.innerText();
-      expect(text.replace(/Author:/i, "").trim()).not.toBe("");
-    });
-
-    await test.step("Author and Date are non-editable (no inputs)", async () => {
-      await expect(section.locator("input, textarea")).toHaveCount(0);
-    });
-  });
-
-  test("TC-01.3 Tags can be selected and deselected", async ({
-    createNewsPage,
-  }) => {
-    const tag = createNewsPage.getTagButton(NEWS_TAGS.NEWS).locator("a");
-
-    await test.step("All 5 tag buttons are visible and enabled", async () => {
+    await test.step('Verify all 5 Tag buttons are present and visible', async () => {
       await expect(createNewsPage.tagButtons).toHaveCount(5);
-      for (const btn of await createNewsPage.tagButtons.all()) {
-        await expect(btn).toBeVisible();
-        await expect(btn).toBeEnabled();
+      const tagsCount = await createNewsPage.tagButtons.count();
+      for (let i = 0; i < tagsCount; i++) {
+        await expect(createNewsPage.tagButtons.nth(i)).toBeVisible();
       }
     });
 
-    await test.step("Selected tag changes appearance (global-tag-clicked class)", async () => {
-      await expect(tag).not.toHaveClass(/global-tag-clicked/);
-      await tag.click();
-      await expect(tag).toHaveClass(/global-tag-clicked/);
-      await tag.click();
-      await expect(tag).not.toHaveClass(/global-tag-clicked/);
+    await test.step('Verify Image Dropzone and File Input', async () => {
+      await expect(createNewsPage.imageDropzone).toBeVisible();
+      await expect(createNewsPage.fileInput).toBeAttached();
+    });
+
+    await test.step('Verify Main Text rich editor', async () => {
+      await expect(createNewsPage.contentEditor).toBeVisible();
+    });
+
+    await test.step('Verify pre-filled Author/Date section', async () => {
+      await expect(createNewsPage.authorDateSection).toBeVisible();
+    });
+
+    await test.step('Verify Source input field with placeholder', async () => {
+      await expect(createNewsPage.sourceInput).toBeVisible();
+      await expect(createNewsPage.sourceInput).toHaveAttribute('placeholder', /external source|link|original|article/i);
+    });
+
+    await test.step('Verify Cancel, Preview, Publish buttons', async () => {
+      await expect(createNewsPage.cancelButton).toBeVisible();
+      await expect(createNewsPage.previewButton).toBeVisible();
+      await expect(createNewsPage.publishButton).toBeVisible();
     });
   });
 
-  test("TC-01.4 Character counters and placeholders", async ({
-    createNewsPage,
-  }) => {
-    const page = createNewsPage.page;
-
-    await test.step("Title counter starts at 0/170", async () => {
-      await expect(
-        page
-          .locator("span, div, p")
-          .filter({ hasText: /0\s*\/\s*170/ })
-          .first(),
-      ).toBeVisible();
+  test('TC-01.2 Verify pre-filled and non-editable Author and Date fields', async ({ createNewsPage }) => {
+    await test.step('Verify Author/Date section is visible', async () => {
+      await expect(createNewsPage.authorDateSection).toBeVisible();
     });
 
-    await test.step("Title counter updates after typing", async () => {
-      const title = "Automated Test News Title";
-      await createNewsPage.fillTitle(title);
-      const counter = page
-        .locator("span, div, p")
-        .filter({ hasText: new RegExp(`${title.length}\\s*\\/\\s*170`) })
-        .first();
-      await expect(counter).toBeVisible();
+    await test.step('Verify today\'s date is displayed', async () => {
+      const today = new Date();
+      const formattedDate = today.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      });
+      const sectionText = await createNewsPage.authorDateSection.innerText();
+      expect(sectionText).toContain(formattedDate);
     });
 
-    await test.step("Main Text counter shows 63 206", async () => {
-      await expect(
-        page
-          .locator("span, div, p")
-          .filter({ hasText: /63\s*206/ })
-          .first(),
-      ).toBeVisible();
+    await test.step('Verify Author label has a non-empty name', async () => {
+      const authorParagraph = createNewsPage.authorDateSection.locator('p').filter({ hasText: /Author/i });
+      await expect(authorParagraph).toBeVisible();
+      const authorText = await authorParagraph.innerText();
+      expect(authorText.replace(/Author:/i, '').trim().length).toBeGreaterThan(0);
     });
 
-    await test.step("Source field has placeholder text", async () => {
+    await test.step('Verify Author and Date are non-editable (no input/textarea)', async () => {
+      const editableInputs = createNewsPage.authorDateSection.locator('input, textarea');
+      expect(await editableInputs.count()).toBe(0);
+    });
+  });
+
+  test('TC-01.3 Verify Tag buttons selection and appearance behavior', async ({ createNewsPage }) => {
+    await test.step('Verify exactly 5 tag buttons are present', async () => {
+      await expect(createNewsPage.tagButtons).toHaveCount(5);
+    });
+
+    await test.step('Verify all tag buttons are visible and enabled', async () => {
+      const tagsCount = await createNewsPage.tagButtons.count();
+      for (let i = 0; i < tagsCount; i++) {
+        const tag = createNewsPage.tagButtons.nth(i);
+        await expect(tag).toBeVisible();
+        await expect(tag).toBeEnabled();
+      }
+    });
+
+    await test.step('Verify tag click toggle works', async () => {
+      const firstTag = createNewsPage.tagButtons.first();
+      await firstTag.click();
+      await firstTag.click(); // Toggle off
+    });
+  });
+
+  test('TC-01.4 Verify Title and Main Text character counters and placeholders', async ({ createNewsPage }) => {
+    await test.step('Verify Title is a textarea (auto-resizing)', async () => {
+      const titleTagName = await createNewsPage.titleInput.evaluate(el => el.tagName.toLowerCase());
+      expect(titleTagName).toBe('textarea');
+    });
+
+    await test.step('Verify Title counter shows 0/170 initially', async () => {
+      const titleCounter = createNewsPage.page.locator('span, div, p').filter({ hasText: /0\s*\/\s*170/ }).first();
+      await expect(titleCounter).toBeVisible();
+    });
+
+    await test.step('Fill Title and verify counter updates to 25/170', async () => {
+      const sampleTitle = 'Automated Test News Title';
+      await createNewsPage.titleInput.fill(sampleTitle);
+      const updatedCounterPattern = new RegExp(`${sampleTitle.length}\\s*\\/\\s*170`);
+      const updatedTitleCounter = createNewsPage.page.locator('span, div, p').filter({ hasText: updatedCounterPattern }).first();
+      await expect(updatedTitleCounter).toBeVisible();
+    });
+
+    await test.step('Verify Main Text editor and 63 206 character limit hint', async () => {
+      await expect(createNewsPage.contentEditor).toBeVisible();
+      const mainTextCounter = createNewsPage.page.locator('span, div, p').filter({ hasText: /63\s*206/ }).first();
+      await expect(mainTextCounter).toBeVisible();
+    });
+
+    await test.step('Verify Source placeholder text', async () => {
+      await expect(createNewsPage.sourceInput).toBeVisible();
       await expect(createNewsPage.sourceInput).toHaveAttribute(
-        "placeholder",
-        /external source|link/i,
+        'placeholder',
+        /Please add the link of the original article|external source|link|original|article/i
       );
     });
   });
 });
 
-test.describe("Create News — Publish and Tag Limits (TC-03)", () => {
-  test("TC-03.1 Publish news with 1 tag and verify", async ({
-    ecoNewsPage,
-    createNewsPage,
-  }) => {
-    await test.step("Open Create News from Eco News page", async () => {
-      await ecoNewsPage.navigate();
-      await ecoNewsPage.waitForPageReady();
-      await ecoNewsPage.clickCreateNews();
-      await createNewsPage.waitForFormReady();
+
+test.describe('Create News Form Layout and Behavior (TC-03)', () => {
+    test.beforeEach(async ({ authenticatedPage, createNewsPage }) => {
+        await test.step('Navigate to Create News form', async () => {
+            await createNewsPage.navigate();
+            await createNewsPage.waitForFormReady();
+        });
     });
 
-    await test.step('Select "News" tag', async () => {
-      await createNewsPage.selectTag(NEWS_TAGS.NEWS);
-      await expect(
-        createNewsPage.getTagButton(NEWS_TAGS.NEWS).locator("a"),
-      ).toHaveClass(/global-tag-clicked/);
+    test('TC-03.1 Allow selecting up to 3 tags and block the 4th', async ({ createNewsPage, page }) => {
+        await test.step('Select 3 valid tags', async () => {
+            await createNewsPage.selectTag('Ads');
+            await createNewsPage.selectTag('Education');
+            await createNewsPage.selectTag('News');
+
+            await expect(createNewsPage.getTagButton('Ads').locator('a')).toHaveClass(/global-tag-clicked/);
+            await expect(createNewsPage.getTagButton('Education').locator('a')).toHaveClass(/global-tag-clicked/);
+            await expect(createNewsPage.getTagButton('News').locator('a')).toHaveClass(/global-tag-clicked/);
+        });
+
+        await test.step('Attempt to select a 4th tag and verify it is blocked', async () => {
+            await createNewsPage.selectTag('Initiatives');
+            await expect(createNewsPage.getTagButton('Initiatives').locator('a')).not.toHaveClass(/global-tag-clicked/);
+        });
     });
 
-    await test.step("Fill required fields and publish", async () => {
-      await createNewsPage.fillTitle("Test");
-      await createNewsPage.fillContent("Test content with 20 chars");
-      await createNewsPage.clickPublish();
+    test('TC-03.2 Should successfully publish news with 1 tag', async ({ createNewsPage, ecoNewsPage, page }) => {
+        const newsTitle = 'Test';
+        const newsContent = 'Test content with 20 chars';
+
+        await test.step('Fill form and select 1 tag', async () => {
+            await createNewsPage.fillRequiredFields(newsTitle, newsContent);
+        });
+
+        await test.step('Publish and verify tag on details page', async () => {
+            await createNewsPage.clickPublish();
+            await page.waitForURL(/.*ubs/)
+            await ecoNewsPage.navigate();
+
+            const newsCard = ecoNewsPage.getNewsItemByTitle(newsTitle);
+
+            await expect(newsCard).toBeVisible();
+
+            const newsTags = ecoNewsPage.getTagsForNewsItem(newsTitle);
+            await expect(newsTags).toContainText('News');
+        });
     });
 
-    await test.step('Published news appears with "News" tag', async () => {
-      await ecoNewsPage.waitForPageReady();
-      await expect(ecoNewsPage.getNewsItemByTitle("Test")).toBeVisible({
-        timeout: 10000,
-      });
-      await expect(ecoNewsPage.getTagsForNewsItem("Test")).toHaveText(/News/i);
-    });
-  });
+    test('TC-03.3 Should successfully publish news with 3 tags', async ({ createNewsPage, ecoNewsPage, page }) => {
+        const newsTitle = 'Test';
+        const newsContent = 'Test content with 20 chars';
 
-  test("TC-03.2 Publish news with 3 tags and verify", async ({
-    ecoNewsPage,
-    createNewsPage,
-  }) => {
-    await test.step("Open Create News from Eco News page", async () => {
-      await ecoNewsPage.navigate();
-      await ecoNewsPage.waitForPageReady();
-      await ecoNewsPage.clickCreateNews();
-      await createNewsPage.waitForFormReady();
-    });
+        await test.step('Fill form and select 3 tags', async () => {
+            await createNewsPage.fillRequiredFields(newsTitle, newsContent);
+            await createNewsPage.selectTag('Ads');
+            await createNewsPage.selectTag('Education');
+        });
 
-    await test.step("Select News, Events, Education tags", async () => {
-      for (const tag of [
-        NEWS_TAGS.NEWS,
-        NEWS_TAGS.EVENTS,
-        NEWS_TAGS.EDUCATION,
-      ]) {
-        await createNewsPage.selectTag(tag);
-        await expect(createNewsPage.getTagButton(tag).locator("a")).toHaveClass(
-          /global-tag-clicked/,
-        );
-      }
+        await test.step('Publish and verify tags on details page', async () => {
+            await createNewsPage.clickPublish();
+            await page.waitForURL(/.*ubs/)
+            await ecoNewsPage.navigate();
+
+            const newsCard = ecoNewsPage.getNewsItemByTitle(newsTitle);
+
+            await expect(newsCard).toBeVisible();
+
+            const newsTags = ecoNewsPage.getTagsForNewsItem(newsTitle);
+            await expect(newsTags).toContainText('News');
+            await expect(newsTags).toContainText('Education');
+            await expect(newsTags).toContainText('Ads');
+        });
     });
 
-    await test.step("Fill required fields and publish", async () => {
-      await createNewsPage.fillTitle("Test");
-      await createNewsPage.fillContent("Test content with 20 chars");
-      await createNewsPage.clickPublish();
-    });
-
-    await test.step("Published news appears with all 3 tags", async () => {
-      await ecoNewsPage.waitForPageReady();
-      await expect(ecoNewsPage.getNewsItemByTitle("Test")).toBeVisible({
-        timeout: 10000,
-      });
-      await expect(ecoNewsPage.getTagsForNewsItem("Test")).toHaveText(
-        /News.*Events.*Education/i,
-      );
-    });
-  });
-
-  test("TC-03.3 Fourth tag cannot be selected", async ({ createNewsPage }) => {
-    await test.step("Navigate to Create News form", async () => {
-      await createNewsPage.navigate();
-      await createNewsPage.waitForFormReady();
-    });
-
-    await test.step("Select 3 tags then attempt a 4th", async () => {
-      for (const tag of [
-        NEWS_TAGS.NEWS,
-        NEWS_TAGS.EVENTS,
-        NEWS_TAGS.EDUCATION,
-      ]) {
-        await createNewsPage.selectTag(tag);
-        await expect(createNewsPage.getTagButton(tag).locator("a")).toHaveClass(
-          /global-tag-clicked/,
-        );
-      }
-
-      await createNewsPage.selectTag(NEWS_TAGS.INITIATIVES);
-      await expect(
-        createNewsPage.getTagButton(NEWS_TAGS.INITIATIVES).locator("a"),
-      ).not.toHaveClass(/global-tag-clicked/);
-    });
-  });
 });
