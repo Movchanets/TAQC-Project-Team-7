@@ -100,24 +100,30 @@ jobs:
             const path = require('path');
 
             const resultsDir = 'allure-results';
-            let passed = 0, failed = 0, broken = 0, skipped = 0, unknown = 0, total = 0;
+            let passed = 0, failed = 0, broken = 0, skipped = 0, total = 0;
             const failedTests = [];
 
             if (fs.existsSync(resultsDir)) {
               const files = fs.readdirSync(resultsDir).filter(f => f.endsWith('-result.json'));
+              // Deduplicate by historyId — keep only the latest result per test (retries overwrite)
+              const byHistoryId = new Map();
               for (const file of files) {
                 try {
                   const data = JSON.parse(fs.readFileSync(path.join(resultsDir, file), 'utf8'));
                   if (data.hidden) continue;
-                  total++;
-                  switch (data.status) {
-                    case 'passed': passed++; break;
-                    case 'failed': failed++; failedTests.push(data.name); break;
-                    case 'broken': broken++; failedTests.push(data.name + ' (broken)'); break;
-                    case 'skipped': skipped++; break;
-                    default: unknown++; break;
-                  }
+                  const key = data.historyId || data.name;
+                  byHistoryId.set(key, data);
                 } catch (e) { /* skip malformed */ }
+              }
+              for (const data of byHistoryId.values()) {
+                total++;
+                switch (data.status) {
+                  case 'passed': passed++; break;
+                  case 'failed': failed++; failedTests.push(data.name); break;
+                  case 'broken': broken++; failedTests.push(data.name + ' (broken)'); break;
+                  case 'skipped': skipped++; break;
+                  default: break;
+                }
               }
             }
 
