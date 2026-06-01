@@ -90,7 +90,7 @@ jobs:
 
       - name: Generate Allure Report
         if: always()
-        run: npx allure generate allure-results -o allure-report --clean --history-limit 20
+        run: npx allure generate allure-results -o allure-report --history-limit 20
 
       - name: Debug report structure
         if: always()
