@@ -59,4 +59,13 @@ export class EcoNewsPage extends BasePage {
     return newsCard.locator('.filter-tag');
   }
 
+  /** Click a news item by its title to navigate to the article detail page. */
+  async clickNewsItemByTitle(title: string): Promise<void> {
+    await this.step(`Click news item: "${title}"`, async () => {
+      const newsCard = this.getNewsItemByTitle(title);
+      await this.waitForVisible(newsCard, TIMEOUTS.MEDIUM);
+      await newsCard.click();
+    });
+  }
+
 }
