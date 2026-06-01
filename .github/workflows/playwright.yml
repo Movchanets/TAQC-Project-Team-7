@@ -70,34 +70,25 @@ jobs:
             playwright-report/
           retention-days: 7
 
-      - name: Get Allure history from gh-pages
-        uses: actions/checkout@v4
-        if: always()
-        continue-on-error: true # Не впаде при першому запуску, коли гілки gh-pages ще не існує
+      - name: Restore Allure history from cache
+        uses: actions/cache@v4
         with:
-          ref: gh-pages
-          path: gh-pages
-
-      - name: Prepare Allure history
-        if: always()
-        run: |
-          mkdir -p allure-history
-          if [ -d "gh-pages/history" ]; then
-            cp -r gh-pages/history/* allure-history/
-          fi
-          echo "=== allure-history/ ==="
-          ls -la allure-history/
+          path: allure-history
+          key: allure-history-${{ github.ref_name }}
+          restore-keys: |
+            allure-history-${{ github.ref_name }}
+            allure-history-
 
       - name: Generate Allure Report
         if: always()
-        run: npx -p allure-commandline allure generate allure-results -o allure-report --history-dir allure-history --clean
-
-      - name: Debug report structure
-        if: always()
         run: |
-          echo "=== allure-report top-level ==="
-          ls allure-report/ | head -20
-          echo ""
+          mkdir -p allure-history
+          npx -p allure-commandline allure generate allure-results -o allure-report --history-dir allure-history --clean
+          # Persist report history for next run's cache
+          if [ -d "allure-report/history" ]; then
+            rm -rf allure-history
+            cp -r allure-report/history allure-history
+          fi
           echo "=== allure-report/history/ ==="
           ls -la allure-report/history/ 2>/dev/null || echo "NO history/ dir in report"
 
