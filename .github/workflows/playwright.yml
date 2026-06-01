@@ -90,12 +90,80 @@ jobs:
           allure_report: allure-report
           allure_history: allure-history
 
-      - name: Allure Pull Request Action (Official)
-        uses: allure-framework/allure-action@v0
+      - name: Post Allure summary to PR
         if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
         with:
-          report-directory: "./allure-report"
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            const resultsDir = 'allure-results';
+            let passed = 0, failed = 0, broken = 0, skipped = 0, unknown = 0, total = 0;
+            const failedTests = [];
+
+            if (fs.existsSync(resultsDir)) {
+              const files = fs.readdirSync(resultsDir).filter(f => f.endsWith('-result.json'));
+              for (const file of files) {
+                try {
+                  const data = JSON.parse(fs.readFileSync(path.join(resultsDir, file), 'utf8'));
+                  if (data.hidden) continue;
+                  total++;
+                  switch (data.status) {
+                    case 'passed': passed++; break;
+                    case 'failed': failed++; failedTests.push(data.name); break;
+                    case 'broken': broken++; failedTests.push(data.name + ' (broken)'); break;
+                    case 'skipped': skipped++; break;
+                    default: unknown++; break;
+                  }
+                } catch (e) { /* skip malformed */ }
+              }
+            }
+
+            const reportUrl = `https://${context.repo.owner}.github.io/${context.repo.repo}/`;
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+
+            const statusIcon = (failed + broken) > 0 ? '❌' : '✅';
+
+            let body = `## ${statusIcon} Allure Report Summary\n\n`;
+            body += `| Passed ✅ | Failed ❌ | Broken 💥 | Skipped ⏭️ | Total |\n`;
+            body += `|:---------:|:---------:|:---------:|:----------:|:-----:|\n`;
+            body += `| ${passed} | ${failed} | ${broken} | ${skipped} | ${total} |\n\n`;
+
+            if (failedTests.length > 0) {
+              body += `<details>\n<summary>🔴 Failed / Broken tests (${failedTests.length})</summary>\n\n`;
+              for (const name of failedTests) {
+                body += `- ${name}\n`;
+              }
+              body += `\n</details>\n\n`;
+            }
+
+            body += `📦 [View Full Report](${reportUrl}) · [Workflow Run](${runUrl})`;
+
+            // Find existing comment to update
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(c => c.body.includes('Allure Report Summary'));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
 
       - name: Deploy report to Github Pages
         uses: peaceiris/actions-gh-pages@v4
