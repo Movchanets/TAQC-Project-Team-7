@@ -18,7 +18,7 @@ export class NewsDetailsPage extends BaseNewsPage {
 
     this.backToNewsLink = page.getByRole('link', { name: /back to news|повернутися до новин/i });
     this.deleteNewsButton = page.getByRole('button', { name: /delete|видалити/i });
-    this.editNewsButton = page.getByRole('button', { name: /edit news|редагувати новину/i });
+    this.editNewsButton = page.getByRole('link', { name: /edit news|редагувати новину/i });
   }
 
   get url(): string {

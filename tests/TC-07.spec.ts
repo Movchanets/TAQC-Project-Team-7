@@ -1,10 +1,10 @@
 import { test, expect } from '../fixtures/index';
 import { MESSAGES } from '../utils/constants';
 
-test.describe('Create News — Cancel Confirmation Modal (TC-07)', () => {
+test.describe('TC-07 — Cancel Confirmation Modal', () => {
 
   test.beforeEach(async ({ ecoNewsPage, createNewsPage }) => {
-    await test.step('Step 1: Navigate to GreenCity News and click "Create News"', async () => {
+    await test.step('Navigate to GreenCity News and click "Create News"', async () => {
       await ecoNewsPage.navigate();
       await ecoNewsPage.waitForPageReady();
       await ecoNewsPage.clickCreateNews();
@@ -16,19 +16,19 @@ test.describe('Create News — Cancel Confirmation Modal (TC-07)', () => {
     const title = 'Test';
     const content = 'Test content with 20 chars';
 
-    await test.step('Step 2: Fill Title and Main Text, then click Cancel', async () => {
+    await test.step('Fill Title and Main Text, then click Cancel', async () => {
       await createNewsPage.fillTitle(title);
       await createNewsPage.fillContent(content);
       await createNewsPage.clickCancel();
     });
 
-    await test.step('Step 3: Verify confirmation modal appears with correct message', async () => {
+    await test.step('Verify confirmation modal appears with correct message', async () => {
       await expect(createNewsPage.cancelModal).toBeVisible();
       await expect(createNewsPage.cancelModal).toContainText(MESSAGES.CANCEL_MODAL_TITLE);
       await createNewsPage.confirmCancel();
     });
 
-    await test.step('Step 4: Verify form closes and user is redirected to news page', async () => {
+    await test.step('Verify form closes and user is redirected to news page', async () => {
       await page.waitForURL('**/news');
       await expect(page).toHaveURL(/news/);
       await expect(createNewsPage.titleInput).not.toBeVisible();
@@ -39,19 +39,19 @@ test.describe('Create News — Cancel Confirmation Modal (TC-07)', () => {
     const title = 'Test';
     const content = 'Test content with 20 chars';
 
-    await test.step('Step 2: Fill Title and Main Text, then click Cancel', async () => {
+    await test.step('Fill Title and Main Text, then click Cancel', async () => {
       await createNewsPage.fillTitle(title);
       await createNewsPage.fillContent(content);
       await createNewsPage.clickCancel();
     });
 
-    await test.step('Step 3: Verify confirmation modal appears, click "Continue editing"', async () => {
+    await test.step('Verify confirmation modal appears, click "Continue editing"', async () => {
       await expect(createNewsPage.cancelModal).toBeVisible();
       await expect(createNewsPage.cancelModal).toContainText(MESSAGES.CANCEL_MODAL_TITLE);
       await createNewsPage.continueEditing();
     });
 
-    await test.step('Step 5: Verify modal closes and form remains open with data intact', async () => {
+    await test.step('Verify modal closes and form remains open with data intact', async () => {
       await expect(createNewsPage.cancelModal).not.toBeVisible();
       await expect(createNewsPage.titleInput).toBeVisible();
       await expect(createNewsPage.titleInput).toHaveValue(title);

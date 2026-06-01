@@ -18,6 +18,9 @@ env:
 
 jobs:
   test:
+    concurrency:
+      group: allure-gh-pages-${{ github.ref }}
+      cancel-in-progress: false
     timeout-minutes: 60
     runs-on: ubuntu-latest
 
@@ -57,9 +60,8 @@ jobs:
         env:
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
-        run: npx playwright test --project=chromium --reporter=line,allure-playwright
+        run: npx playwright test --project=chromium --reporter=line,allure-playwright,html
         continue-on-error: true
-
       - name: Upload test artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -73,37 +75,106 @@ jobs:
       - name: Get Allure history from gh-pages
         uses: actions/checkout@v4
         if: always()
-        continue-on-error: true # Не впаде при першому запуску, коли гілки gh-pages ще не існує
+        continue-on-error: true
         with:
           ref: gh-pages
           path: gh-pages
 
-      - name: Prepare Allure history
+      - name: Generate Allure Report with history
+        uses: simple-elf/allure-report-action@master
         if: always()
-        # Ручне копіювання історії
-        run: |
-          if [ -d "gh-pages/history" ]; then
-            mkdir -p allure-results/history
-            cp -r gh-pages/history/* allure-results/history/
-          fi
-
-      - name: Generate Allure Report natively
-        if: always()
-        # Використовуємо нативну CLI утиліту для генерації звіту
-        run: npx allure generate allure-results -o allure-report
-
-      - name: Allure Pull Request Action (Official)
-        uses: allure-framework/allure-action@v0
-        if: github.event_name == 'pull_request' && always()
+        id: allure-report
         with:
-          report-directory: "./allure-report"
+          allure_results: allure-results
+          gh_pages: gh-pages
+          allure_report: allure-report
+          allure_history: allure-history
+
+      - name: Post Allure summary to PR
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            const resultsDir = 'allure-results';
+            let passed = 0, failed = 0, broken = 0, skipped = 0, total = 0;
+            const failedTests = [];
+
+            if (fs.existsSync(resultsDir)) {
+              const files = fs.readdirSync(resultsDir).filter(f => f.endsWith('-result.json'));
+              // Deduplicate by historyId — keep only the latest result per test (retries overwrite)
+              const byHistoryId = new Map();
+              for (const file of files) {
+                try {
+                  const data = JSON.parse(fs.readFileSync(path.join(resultsDir, file), 'utf8'));
+                  if (data.hidden) continue;
+                  const key = data.historyId || data.name;
+                  byHistoryId.set(key, data);
+                } catch (e) { /* skip malformed */ }
+              }
+              for (const data of byHistoryId.values()) {
+                total++;
+                switch (data.status) {
+                  case 'passed': passed++; break;
+                  case 'failed': failed++; failedTests.push(data.name); break;
+                  case 'broken': broken++; failedTests.push(data.name + ' (broken)'); break;
+                  case 'skipped': skipped++; break;
+                  default: break;
+                }
+              }
+            }
+
+            const reportUrl = `https://${context.repo.owner}.github.io/${context.repo.repo}/`;
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+
+            const statusIcon = (failed + broken) > 0 ? '❌' : '✅';
+
+            let body = `## ${statusIcon} Allure Report Summary\n\n`;
+            body += `| Passed ✅ | Failed ❌ | Broken 💥 | Skipped ⏭️ | Total |\n`;
+            body += `|:---------:|:---------:|:---------:|:----------:|:-----:|\n`;
+            body += `| ${passed} | ${failed} | ${broken} | ${skipped} | ${total} |\n\n`;
+
+            if (failedTests.length > 0) {
+              body += `<details>\n<summary>🔴 Failed / Broken tests (${failedTests.length})</summary>\n\n`;
+              for (const name of failedTests) {
+                body += `- ${name}\n`;
+              }
+              body += `\n</details>\n\n`;
+            }
+
+            body += `📦 [View Full Report](${reportUrl}) · [Workflow Run](${runUrl})`;
+
+            // Find existing comment to update
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(c => c.body.includes('Allure Report Summary'));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
 
       - name: Deploy report to Github Pages
         uses: peaceiris/actions-gh-pages@v4
-        if: always()
+        if: always() && steps.allure-report.outcome == 'success'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: allure-report
-          keep_files: true
+          publish_dir: allure-history

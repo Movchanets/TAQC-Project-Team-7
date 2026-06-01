@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { Locator, Page, expect } from '@playwright/test';
 import { BasePage } from './base.page';
 import { ENV } from '../utils/env';
 import { FORM_LIMITS, TIMEOUTS, ROUTES, NEWS_TAGS } from '../utils/constants';
@@ -31,6 +31,8 @@ export class CreateNewsPage extends BasePage {
 
   // ── Validation & Feedback ────────────────────────────────────────────
   readonly titleCounter: Locator;
+  /** Precise counter locator scoped inside the title wrapper. */
+  readonly titleCounterText: Locator;
   readonly validationErrors: Locator;
 
   // ── Cancel Modal ─────────────────────────────────────────────────────
@@ -61,6 +63,7 @@ export class CreateNewsPage extends BasePage {
 
     // Validation & Feedback
     this.titleCounter = page.locator('span, div, p').filter({ hasText: /\d+\s*\/\s*170/ }).first();
+    this.titleCounterText = page.locator('.title-wrapper .field-info, .title-block .field-info').first();
     this.validationErrors = page.locator('.error-message, .mat-error, .validation-error, [class*="error"]');
 
     // Cancel Modal
@@ -292,5 +295,59 @@ export class CreateNewsPage extends BasePage {
       await this.selectTag(tagName);
       await this.fillContent(content);
     });
+  }
+
+  // ── TC-02 Validation Helpers ──────────────────────────────────────────
+
+  /** Get the title counter text value (e.g., "0/170", "9/170"). */
+  async getTitleCounterTextValue(): Promise<string> {
+    await this.titleCounterText.waitFor({ state: 'visible', timeout: TIMEOUTS.SHORT });
+    return (await this.titleCounterText.innerText()).trim();
+  }
+
+  /** Get a computed CSS property value from the title counter element. */
+  async getTitleCounterCSS(property: string): Promise<string> {
+    return this.titleCounterText.evaluate(
+      (el, prop) => getComputedStyle(el).getPropertyValue(prop),
+      property,
+    );
+  }
+
+  /** Assert the title counter displays the expected text (e.g., "9/170"). */
+  async assertTitleCounterText(expected: string): Promise<void> {
+    await expect(this.titleCounterText).toHaveText(expected);
+  }
+
+  /** Assert the title counter has the Angular "warning" class (red highlight). */
+  async assertTitleCounterHasWarning(): Promise<void> {
+    await expect(this.titleCounterText).toHaveClass(/warning/);
+  }
+
+  /** Assert the title counter does NOT have the "warning" class. */
+  async assertTitleCounterHasNoWarning(): Promise<void> {
+    await expect(this.titleCounterText).not.toHaveClass(/warning/);
+  }
+
+  /**
+   * Assert the title input border is red (validation error state).
+   * Checks border-bottom-color which is the most reliable indicator.
+   */
+  async assertTitleBorderIsRed(): Promise<void> {
+    await expect(this.titleInput).toHaveCSS('border-bottom-color', /rgb\(255,\s*0,\s*0\)/);
+  }
+
+  /** Assert the title input border is NOT red (valid or untouched state). */
+  async assertTitleBorderIsNotRed(): Promise<void> {
+    const color = await this.titleInput.evaluate((el) => getComputedStyle(el).borderBottomColor);
+    expect(color).not.toBe('rgb(255, 0, 0)');
+  }
+
+  /**
+   * Focus the title input then blur it by clicking elsewhere.
+   * This triggers Angular's `ng-touched` state, which activates validation CSS.
+   */
+  async blurTitle(): Promise<void> {
+    await this.titleInput.click();
+    await this.page.locator('h2, h3').first().click();
   }
 }
