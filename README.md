@@ -98,10 +98,14 @@ GitHub Actions workflow (`.github/workflows/playwright.yml`):
 
 | TC | Description | File |
 |----|-------------|------|
-| TC-01 | Create News form layout, field order, tags, counters | `createNews.spec.ts` |
-| TC-03 | Publish news with 1/3 tags, 4th tag blocked | `createNews.spec.ts` |
-| TC-07 | Cancel confirmation modal (Yes, cancel / Continue editing) | `cancelNews.spec.ts` |
-| — | Home page, Login, Profile | `home.spec.ts`, `login.spec.ts`, `profile.spec.ts` |
+| TC-01 | Create News form layout, field order, tags, counters | `TC-01.spec.ts` |
+| TC-02 |  Title field validation and Publish button state. | `TC-02.spec.ts` |
+| TC-03 | Publish news with 1/3 tags, 4th tag blocked | `TC-03.spec.ts` |
+| TC-07 | Cancel confirmation modal (Yes, cancel / Continue editing) | `TC-07.spec.ts` |
+| TC-08 | Preview page displays entered content, dynamic date/author, and "Back to editing" link. | `TC-08.spec.ts` |
+| TC-09 | Verify "Edit news" button is visible to the author of the published news post. | `TC-09.spec.ts` |
+| — | Home page, Login behavior, Profile layout, and basic navigation. | `home.spec.ts`, `login.spec.ts`, `profile.spec.ts` |
+| — | Global Auth Setup (UI login and storageState extraction). | `auth.setup.ts` |
 
 ---
 
