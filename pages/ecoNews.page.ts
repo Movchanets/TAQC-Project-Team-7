@@ -68,4 +68,14 @@ export class EcoNewsPage extends BasePage {
     });
   }
 
+  /** * Get the creation date of a news item by its title.
+   * Useful for verifying that editing a news post does not change its original creation date.
+   * * @param title The exact title of the news post.
+   * @returns The date string (e.g., "Jun 4, 2026") or null if the element is empty.
+   */
+  async getNewsDateByTitle(title: string): Promise<string | null> {
+    const newsItem = this.getNewsItemByTitle(title);
+    const dateElement = newsItem.locator('.user-data-text-date span').first();
+    return await dateElement.textContent();
+  }
 }
